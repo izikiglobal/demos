@@ -77,6 +77,14 @@ input:user-invalid,select:user-invalid,textarea:user-invalid{border-color:var(--
 .pills input:checked+span{border-color:var(--marigold);background:var(--marigold);color:var(--ground);font-weight:800}
 .pills input:focus-visible+span{box-shadow:0 0 0 3px rgba(237,166,68,.35)}
 
+.tracks{display:grid;gap:26px}
+.track{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 22px;min-width:0}
+.track[hidden]{display:none}
+.tracks.multi .track{border-left:3px solid var(--marigold);padding-left:20px}
+.tracks.multi .track:nth-child(2){border-color:var(--coral)}
+.tracks.multi .track:nth-child(3){border-color:var(--leaf)}
+.track-h{display:none;grid-column:1/-1;margin:0;font-family:var(--display);font-weight:800;font-size:1.1rem;letter-spacing:.04em}
+.tracks.multi .track-h{display:block}
 .check{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;font-family:var(--body);font-size:.95rem;cursor:pointer}
 .check input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--marigold)}
 
@@ -102,7 +110,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
 @media (max-width:820px){
   .hero{grid-template-columns:1fr;gap:28px}
   .hero figure{max-width:440px}
-  fieldset{grid-template-columns:1fr}
+  fieldset,.track{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:no-preference){
   .hero img{transition:transform .4s ease}
@@ -159,18 +167,57 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
 
     <fieldset>
       <legend><span class="num">03</span> The music</legend>
-      <div class="field full"><label for="tracks">Track title(s) <span class="req">*</span></label><input id="tracks" name="tracks" type="text" required maxlength="240" placeholder="Track one, Track two"></div>
-      <div class="field full"><label for="link">Private listening link <span class="req">*</span></label><input id="link" name="link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/sets/demo/s-xxxx"><p class="hint">Private SoundCloud link, Dropbox or Google Drive folder. Make sure anyone with the link can listen.</p></div>
-      <div class="field full"><label for="download">Download link (WAV)</label><input id="download" name="download" type="url" maxlength="500" placeholder="https://"><p class="hint">Optional. Helps us test tracks in a set.</p></div>
       <div class="field full">
-        <span class="q" id="style-q">Style <span class="req">*</span></span>
-        <div class="pills" role="group" aria-labelledby="style-q" id="styles">
-          <label><input type="checkbox" name="style" value="Afro house"><span>Afro house</span></label>
-          <label><input type="checkbox" name="style" value="Tech house"><span>Tech house</span></label>
+        <span class="q" id="count-q">How many tracks are you sending? <span class="req">*</span></span>
+        <div class="pills" role="radiogroup" aria-labelledby="count-q" id="trackCount">
+          <label><input type="radio" name="trackCount" value="1" checked><span>1 track</span></label>
+          <label><input type="radio" name="trackCount" value="2"><span>2 tracks</span></label>
+          <label><input type="radio" name="trackCount" value="3"><span>3 tracks</span></label>
         </div>
-        <p class="hint">We only sign Afro house and tech house.</p>
+        <p class="hint">We only sign Afro house and tech house. Make sure anyone with the link can listen (private SoundCloud, Dropbox or Google Drive).</p>
       </div>
-      <div class="field"><label for="bpm">BPM</label><input id="bpm" name="bpm" type="number" min="60" max="180" inputmode="numeric" placeholder="122"></div>
+      <div class="tracks full" id="tracks">
+        <div class="track" data-track="1">
+          <h3 class="track-h">Track 1</h3>
+          <div class="field full"><label for="t1_title">Track title <span class="req">*</span></label><input id="t1_title" name="t1_title" type="text" required maxlength="120"></div>
+          <div class="field full"><label for="t1_link">Private listening link <span class="req">*</span></label><input id="t1_link" name="t1_link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/track/s-xxxx"></div>
+          <div class="field">
+            <span class="q" id="t1_style_q">Style <span class="req">*</span></span>
+            <div class="pills" role="radiogroup" aria-labelledby="t1_style_q">
+              <label><input type="radio" name="t1_style" value="Afro house" required><span>Afro house</span></label>
+              <label><input type="radio" name="t1_style" value="Tech house" required><span>Tech house</span></label>
+            </div>
+          </div>
+          <div class="field"><label for="t1_bpm">BPM</label><input id="t1_bpm" name="t1_bpm" type="number" min="60" max="180" inputmode="numeric" placeholder="122"></div>
+        </div>
+        <div class="track" data-track="2" hidden>
+          <h3 class="track-h">Track 2</h3>
+          <div class="field full"><label for="t2_title">Track title <span class="req">*</span></label><input id="t2_title" name="t2_title" type="text" required maxlength="120" disabled></div>
+          <div class="field full"><label for="t2_link">Private listening link <span class="req">*</span></label><input id="t2_link" name="t2_link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/track/s-xxxx" disabled></div>
+          <div class="field">
+            <span class="q" id="t2_style_q">Style <span class="req">*</span></span>
+            <div class="pills" role="radiogroup" aria-labelledby="t2_style_q">
+              <label><input type="radio" name="t2_style" value="Afro house" required disabled><span>Afro house</span></label>
+              <label><input type="radio" name="t2_style" value="Tech house" required disabled><span>Tech house</span></label>
+            </div>
+          </div>
+          <div class="field"><label for="t2_bpm">BPM</label><input id="t2_bpm" name="t2_bpm" type="number" min="60" max="180" inputmode="numeric" placeholder="122" disabled></div>
+        </div>
+        <div class="track" data-track="3" hidden>
+          <h3 class="track-h">Track 3</h3>
+          <div class="field full"><label for="t3_title">Track title <span class="req">*</span></label><input id="t3_title" name="t3_title" type="text" required maxlength="120" disabled></div>
+          <div class="field full"><label for="t3_link">Private listening link <span class="req">*</span></label><input id="t3_link" name="t3_link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/track/s-xxxx" disabled></div>
+          <div class="field">
+            <span class="q" id="t3_style_q">Style <span class="req">*</span></span>
+            <div class="pills" role="radiogroup" aria-labelledby="t3_style_q">
+              <label><input type="radio" name="t3_style" value="Afro house" required disabled><span>Afro house</span></label>
+              <label><input type="radio" name="t3_style" value="Tech house" required disabled><span>Tech house</span></label>
+            </div>
+          </div>
+          <div class="field"><label for="t3_bpm">BPM</label><input id="t3_bpm" name="t3_bpm" type="number" min="60" max="180" inputmode="numeric" placeholder="122" disabled></div>
+        </div>
+      </div>
+      <div class="field full"><label for="download">Download link (WAV)</label><input id="download" name="download" type="url" maxlength="500" placeholder="https://"><p class="hint">Optional. One folder with all the tracks helps us test them in a set.</p></div>
       <div class="field"><label for="type">Release type</label>
         <select id="type" name="type">
           <option value="">Choose…</option>
@@ -223,15 +270,23 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
 
   note.addEventListener('input', function () { count.textContent = note.value.length + ' / 800'; });
 
+  var trackBox = document.getElementById('tracks');
+  var trackEls = trackBox.querySelectorAll('.track');
+  function setTracks(n) {
+    trackEls.forEach(function (el, i) {
+      var on = i < n;
+      el.hidden = !on;
+      el.querySelectorAll('input').forEach(function (x) { x.disabled = !on; });
+    });
+    trackBox.classList.toggle('multi', n > 1);
+  }
+  document.getElementById('trackCount').addEventListener('change', function (e) { setTracks(+e.target.value); });
+  setTracks(+form.querySelector('input[name=trackCount]:checked').value);
+
   function say(msg, err) { status.textContent = msg; status.className = 'status' + (err ? ' err' : ''); }
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (!form.querySelector('input[name=style]:checked')) {
-      say('Please choose Afro house, tech house or both.', true);
-      form.querySelector('input[name=style]').focus();
-      return;
-    }
     if (!form.checkValidity()) {
       var bad = form.querySelector(':invalid');
       say('Please fill in the fields marked *.', true);
@@ -241,6 +296,19 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
     var fd = new FormData(form), data = {};
     fd.forEach(function (v, k) { data[k] = data[k] ? data[k] + ', ' + v : v; });
     data.owned = !!data.owned; data.noAI = !!data.noAI; data.consent = !!data.consent;
+
+    var n = +data.trackCount, titles = [], links = [], styles = [], bpms = [];
+    for (var i = 1; i <= n; i++) {
+      titles.push(data['t' + i + '_title']);
+      links.push((n > 1 ? i + '. ' : '') + data['t' + i + '_link']);
+      if (styles.indexOf(data['t' + i + '_style']) < 0) styles.push(data['t' + i + '_style']);
+      bpms.push(data['t' + i + '_bpm'] || '–');
+      ['title', 'link', 'style', 'bpm'].forEach(function (k) { delete data['t' + i + '_' + k]; });
+    }
+    data.tracks = titles.join(' | ');
+    data.link = links.join('\n');
+    data.style = styles.join(', ');
+    data.bpm = n > 1 ? bpms.join(' / ') : (bpms[0] === '–' ? '' : bpms[0]);
 
     if (API.indexOf('https://script.google.com/') !== 0) {
       say('Preview mode: no backend connected yet.', true);
