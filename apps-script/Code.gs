@@ -19,7 +19,7 @@ var CONFIG = {
 
 var HEADERS = [
   'Received', 'Status', 'Rating', 'Artist', 'Real name', 'Email', 'Location',
-  'Beatport', 'SoundCloud', 'Spotify', 'Instagram', 'Resident Advisor', 'Website',
+  'Beatport', 'SoundCloud', 'Spotify', 'Instagram', 'Website',
   'Tracks', 'Listen link', 'Download link', 'Style',
   'BPM', 'Release type', 'Previous releases', 'Note', 'Found us via',
   'Rights confirmed', 'No AI confirmed', 'Consent', 'Internal notes', 'ID'
@@ -54,7 +54,7 @@ function doPost(e) {
 
     sheet.appendRow([
       new Date(), 'New', '', s_(d.artist), s_(d.realName), s_(d.email).toLowerCase(), s_(d.location),
-      s_(d.beatport), s_(d.soundcloud), s_(d.spotify), s_(d.instagram), s_(d.ra), s_(d.site),
+      s_(d.beatport), s_(d.soundcloud), s_(d.spotify), s_(d.instagram), s_(d.site),
       s_(d.tracks), s_(d.link), s_(d.download), s_(d.style),
       s_(d.bpm), s_(d.type), s_(d.previous), s_(d.note), s_(d.heard),
       d.owned ? 'Yes' : 'No', d.noAI ? 'Yes' : 'No', d.consent ? 'Yes' : 'No', '', id
@@ -126,7 +126,7 @@ function notifyLabel_(d, id) {
   var rows = [
     ['Artist', d.artist], ['Email', d.email], ['From', d.location], ['Beatport', d.beatport],
     ['SoundCloud', d.soundcloud], ['Spotify', d.spotify], ['Instagram', d.instagram],
-    ['Resident Advisor', d.ra], ['Website', d.site],
+    ['Website', d.site],
     ['Tracks', d.tracks], ['Style', d.style], ['BPM', d.bpm], ['Type', d.type],
     ['Previous', d.previous], ['Note', d.note]
   ].filter(function (r) { return r[1]; }).map(function (r) {
