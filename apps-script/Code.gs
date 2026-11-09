@@ -14,6 +14,7 @@
 var CONFIG = {
   LABEL_NAME: 'IZIKI',
   SHEET_ID: '',                         // ID of the IZIKI Demos sheet (from its URL); empty = sheet this script is attached to
+  WEB_APP_URL: '',                      // published web app URL (…/exec), used in Listening Room links
   NOTIFY_EMAIL: 'izikiteam@gmail.com',  // new-demo alerts + monthly pick (comma-separate for several)
   REPLY_TO: 'izikiteam@gmail.com',      // reply-to on the artist confirmation
   TEAM: ['Danielle', 'Mikkas'],         // listeners in the Listening Room
@@ -49,7 +50,7 @@ function doGet(e) {
     t.key = p.key;
     t.who = CONFIG.TEAM.indexOf(p.who) > -1 ? p.who : '';
     t.team = JSON.stringify(CONFIG.TEAM);
-    t.base = ScriptApp.getService().getUrl();
+    t.base = baseUrl_();
     return t.evaluate()
       .setTitle('IZIKI · Listening Room')
       .addMetaTag('viewport', 'width=device-width, initial-scale=1');
@@ -232,7 +233,7 @@ function validate_(d) {
   for (var i = 0; i < links.length; i++) {
     if (!/https?:\/\/\S+$/i.test(links[i].trim())) return 'Please add a valid listening link for every track (starting with https://).';
   }
-  if (!s_(d.style)) return 'Please choose Afro house or tech house for every track.';
+  if (!s_(d.style)) return 'Please choose Afro house or Afro tech house for every track.';
   if (!d.owned) return 'Please confirm the music is yours and unreleased.';
   if (!d.noAI) return 'Please confirm the music was not made with AI. We don\'t accept AI-generated tracks.';
   if (!d.consent) return 'Please agree that we may store your details.';
@@ -339,8 +340,10 @@ function roomKey_() {
 
 function checkKey_(key) { if (key !== roomKey_()) throw new Error('Not allowed'); }
 
+function baseUrl_() { return CONFIG.WEB_APP_URL || ScriptApp.getService().getUrl(); }
+
 function roomLinks_() {
-  var base = ScriptApp.getService().getUrl();
+  var base = baseUrl_();
   return CONFIG.TEAM.map(function (who) {
     return { who: who, url: base + '?view=room&key=' + roomKey_() + '&who=' + encodeURIComponent(who) };
   });
