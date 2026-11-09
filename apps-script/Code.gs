@@ -19,6 +19,8 @@ var CONFIG = {
   NOTIFY_EMAIL: 'izikiteam@gmail.com',  // new-demo alerts + monthly pick (comma-separate for several)
   REPLY_TO: 'izikiteam@gmail.com',      // reply-to on the artist confirmation
   TEAM: ['Danielle', 'Mikkas'],         // listeners in the Listening Room
+  TEAM_EMAILS: {},                      // personal alert address per listener, e.g. { Danielle: '…', Mikkas: '…' }
+                                        // (filled in the live script only; keep personal emails out of GitHub)
   SHEET_NAME: 'Demos',
   RATINGS_SHEET: 'Ratings',
   PICKS_SHEET: 'Demo of the month',
@@ -193,7 +195,7 @@ function monthlyPick() {
   var room = roomLinks_()[0].url;
 
   if (!best) {
-    MailApp.sendEmail({ to: CONFIG.NOTIFY_EMAIL, subject: 'IZIKI · Demo of the month · ' + month,
+    MailApp.sendEmail({ to: teamRecipients_(), subject: 'IZIKI · Demo of the month · ' + month,
       htmlBody: '<p>No rated demos for ' + month + '.</p>' });
     return;
   }
@@ -201,7 +203,7 @@ function monthlyPick() {
   ps.appendRow([month, best.id, best.artist, best.title, best.avg, best.count, best.url, best.email]);
 
   MailApp.sendEmail({
-    to: CONFIG.NOTIFY_EMAIL,
+    to: teamRecipients_(),
     subject: 'IZIKI · Demo of the month · ' + month + ' — ' + best.artist,
     htmlBody:
       '<div style="background:#2b2522;padding:32px 26px;font-family:Georgia,serif;color:#f3e6cc;line-height:1.6">' +
@@ -386,22 +388,29 @@ function notifyLabel_(d, id) {
     return '<tr><td style="padding:4px 14px 4px 0;color:#9a8a72;vertical-align:top">' + r[0] +
            '</td><td style="padding:4px 0">' + esc_(r[1]) + '</td></tr>';
   }).join('');
-  var room = '';
-  try { room = roomLinks_().map(function (l) {
-    return '<a href="' + esc_(l.url) + '">Rate as ' + esc_(l.who) + '</a>'; }).join(' &nbsp;·&nbsp; '); } catch (_) {}
-
-  MailApp.sendEmail({
-    to: CONFIG.NOTIFY_EMAIL,
-    replyTo: s_(d.email),
-    subject: 'New demo · ' + s_(d.artist) + ' — ' + s_(d.tracks),
-    htmlBody:
-      '<div style="font-family:Georgia,serif;color:#2b2522">' +
+  var subject = 'New demo · ' + s_(d.artist) + ' — ' + s_(d.tracks);
+  function body(footer) {
+    return '<div style="font-family:Georgia,serif;color:#2b2522">' +
       '<p style="font:800 12px Arial,sans-serif;letter-spacing:.2em;color:#ea6356">NEW DEMO · ' + id + '</p>' +
       listenLinks_(d) +
       (d.download ? '<p><a href="' + esc_(d.download) + '">Download (WAV)</a></p>' : '') +
       '<table style="font-size:14px">' + rows + '</table>' +
-      '<p style="margin-top:18px">' + (room ? room + ' &nbsp;·&nbsp; ' : '') +
-      '<a href="' + url + '">Open the demo sheet</a></p></div>'
+      '<p style="margin-top:18px">' + footer + '</p></div>';
+  }
+
+  // Team inbox copy (archive; replying goes to the artist)
+  MailApp.sendEmail({ to: CONFIG.NOTIFY_EMAIL, replyTo: s_(d.email), subject: subject,
+    htmlBody: body('<a href="' + url + '">Open the demo sheet</a>') });
+
+  // One personal email per listener, with only their own Listening Room link
+  var links = [];
+  try { links = roomLinks_(); } catch (_) {}
+  links.forEach(function (l) {
+    var to = (CONFIG.TEAM_EMAILS || {})[l.who];
+    if (!to) return;
+    MailApp.sendEmail({ to: to, replyTo: s_(d.email), name: CONFIG.LABEL_NAME, subject: subject,
+      htmlBody: body('Hi ' + esc_(l.who) + ' — <a href="' + esc_(l.url) +
+        '" style="font:800 15px Arial,sans-serif;color:#ea6356">Rate it in your Listening Room →</a>') });
   });
 }
 
@@ -449,14 +458,26 @@ function setup() {
 
 /** Run after deploying the web app: emails the team their private Listening Room links. */
 function sendRoomLinks() {
-  var links = roomLinks_();
-  links.forEach(function (l) { Logger.log(l.who + ': ' + l.url); });
-  MailApp.sendEmail({
-    to: CONFIG.NOTIFY_EMAIL,
-    subject: 'IZIKI · Your Listening Room links',
-    htmlBody: '<p>Bookmark your own link. Do not share them outside the team.</p>' +
-      links.map(function (l) { return '<p><b>' + esc_(l.who) + ':</b> <a href="' + esc_(l.url) + '">' + esc_(l.url) + '</a></p>'; }).join('')
+  roomLinks_().forEach(function (l) {
+    Logger.log(l.who + ': ' + l.url);
+    var to = (CONFIG.TEAM_EMAILS || {})[l.who] || CONFIG.NOTIFY_EMAIL;
+    MailApp.sendEmail({
+      to: to,
+      name: CONFIG.LABEL_NAME,
+      subject: 'IZIKI · Your Listening Room link',
+      htmlBody: '<div style="font-family:Georgia,serif;color:#2b2522">' +
+        '<p>Hi ' + esc_(l.who) + ',</p>' +
+        '<p>This is your personal IZIKI Listening Room. Bookmark it, and please don\'t share it.</p>' +
+        '<p><a href="' + esc_(l.url) + '" style="font:800 16px Arial,sans-serif;color:#ea6356">Open my Listening Room →</a></p>' +
+        '<p style="color:#9a8a72;font-size:13px">Every new demo email also has this link at the bottom.</p></div>'
+    });
   });
+}
+
+function teamRecipients_() {
+  var list = [CONFIG.NOTIFY_EMAIL];
+  Object.keys(CONFIG.TEAM_EMAILS || {}).forEach(function (k) { if (CONFIG.TEAM_EMAILS[k]) list.push(CONFIG.TEAM_EMAILS[k]); });
+  return list.join(',');
 }
 
 function setupSheet() {
