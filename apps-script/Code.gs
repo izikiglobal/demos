@@ -19,9 +19,10 @@ var CONFIG = {
 
 var HEADERS = [
   'Received', 'Status', 'Rating', 'Artist', 'Real name', 'Email', 'Location',
-  'Instagram', 'Profile', 'Tracks', 'Listen link', 'Download link', 'Style',
+  'Beatport', 'SoundCloud', 'Spotify', 'Instagram', 'Resident Advisor', 'Website',
+  'Tracks', 'Listen link', 'Download link', 'Style',
   'BPM', 'Release type', 'Previous releases', 'Note', 'Found us via',
-  'Rights confirmed', 'Consent', 'Internal notes', 'ID'
+  'Rights confirmed', 'No AI confirmed', 'Consent', 'Internal notes', 'ID'
 ];
 
 var STATUSES = ['New', 'Listening', 'Shortlist', 'Offer sent', 'Signed', 'Pass'];
@@ -53,9 +54,10 @@ function doPost(e) {
 
     sheet.appendRow([
       new Date(), 'New', '', s_(d.artist), s_(d.realName), s_(d.email).toLowerCase(), s_(d.location),
-      s_(d.instagram), s_(d.profile), s_(d.tracks), s_(d.link), s_(d.download), s_(d.style),
+      s_(d.beatport), s_(d.soundcloud), s_(d.spotify), s_(d.instagram), s_(d.ra), s_(d.site),
+      s_(d.tracks), s_(d.link), s_(d.download), s_(d.style),
       s_(d.bpm), s_(d.type), s_(d.previous), s_(d.note), s_(d.heard),
-      d.owned ? 'Yes' : 'No', d.consent ? 'Yes' : 'No', '', id
+      d.owned ? 'Yes' : 'No', d.noAI ? 'Yes' : 'No', d.consent ? 'Yes' : 'No', '', id
     ]);
 
     notifyLabel_(d, id);
@@ -76,7 +78,9 @@ function validate_(d) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s_(d.email))) return 'Please check your email address.';
   if (!s_(d.tracks)) return 'Please add your track title(s).';
   if (!/^https?:\/\/\S+$/i.test(s_(d.link))) return 'Please add a valid listening link (starting with https://).';
+  if (!s_(d.style)) return 'Please choose Afro house, tech house or both.';
   if (!d.owned) return 'Please confirm the music is yours and unreleased.';
+  if (!d.noAI) return 'Please confirm the music was not made with AI. We don\'t accept AI-generated tracks.';
   if (!d.consent) return 'Please agree that we may store your details.';
   return '';
 }
@@ -120,7 +124,9 @@ function notifyLabel_(d, id) {
   if (!CONFIG.NOTIFY_EMAIL || CONFIG.NOTIFY_EMAIL.indexOf('example.com') > -1) return;
   var url = SpreadsheetApp.getActiveSpreadsheet().getUrl();
   var rows = [
-    ['Artist', d.artist], ['Email', d.email], ['From', d.location], ['Instagram', d.instagram],
+    ['Artist', d.artist], ['Email', d.email], ['From', d.location], ['Beatport', d.beatport],
+    ['SoundCloud', d.soundcloud], ['Spotify', d.spotify], ['Instagram', d.instagram],
+    ['Resident Advisor', d.ra], ['Website', d.site],
     ['Tracks', d.tracks], ['Style', d.style], ['BPM', d.bpm], ['Type', d.type],
     ['Previous', d.previous], ['Note', d.note]
   ].filter(function (r) { return r[1]; }).map(function (r) {
@@ -190,7 +196,7 @@ function setupSheet() {
 function testSubmission() {
   var r = doPost({ postData: { contents: JSON.stringify({
     artist: 'Test Artist', email: CONFIG.REPLY_TO, tracks: 'Test Track', link: 'https://soundcloud.com/test',
-    style: 'Afro house', bpm: '122', owned: true, consent: true
+    style: 'Afro house', bpm: '122', owned: true, noAI: true, consent: true
   }) } });
   Logger.log(r.getContent());
 }
