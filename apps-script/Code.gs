@@ -13,6 +13,7 @@
 // ---------- settings ----------
 var CONFIG = {
   LABEL_NAME: 'IZIKI',
+  SHEET_ID: '',                         // ID of the IZIKI Demos sheet (from its URL); empty = sheet this script is attached to
   NOTIFY_EMAIL: 'izikiteam@gmail.com',  // new-demo alerts + monthly pick (comma-separate for several)
   REPLY_TO: 'izikiteam@gmail.com',      // reply-to on the artist confirmation
   TEAM: ['Danielle', 'Mikkas'],         // listeners in the Listening Room
@@ -247,12 +248,16 @@ function json_(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }
 
+function ss_() {
+  return CONFIG.SHEET_ID ? SpreadsheetApp.openById(CONFIG.SHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
+}
+
 function iso_(v) { return v instanceof Date ? v.toISOString() : String(v || ''); }
 
 function stars_(n) { var r = Math.floor(n + 0.001); return '★★★★★'.slice(0, r) + '☆☆☆☆☆'.slice(0, 5 - r); }
 
 function sheet_() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = ss_();
   var sh = ss.getSheetByName(CONFIG.SHEET_NAME);
   if (!sh) { sh = ss.insertSheet(CONFIG.SHEET_NAME); }
   if (sh.getLastRow() === 0) setupSheet();
@@ -275,7 +280,7 @@ function ratingsSheet_() { return tab_(CONFIG.RATINGS_SHEET, RATING_HEADERS); }
 function picksSheet_() { return tab_(CONFIG.PICKS_SHEET, PICK_HEADERS); }
 
 function tab_(name, headers) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = ss_();
   var sh = ss.getSheetByName(name) || ss.insertSheet(name);
   if (sh.getLastRow() === 0) {
     sh.getRange(1, 1, 1, headers.length).setValues([headers])
@@ -349,7 +354,7 @@ function esc_(v) {
 
 function notifyLabel_(d, id) {
   if (!CONFIG.NOTIFY_EMAIL || CONFIG.NOTIFY_EMAIL.indexOf('example.com') > -1) return;
-  var url = SpreadsheetApp.getActiveSpreadsheet().getUrl();
+  var url = ss_().getUrl();
   var rows = [
     ['Artist', d.artist], ['Email', d.email], ['From', d.location], ['Beatport', d.beatport],
     ['SoundCloud', d.soundcloud], ['Spotify', d.spotify], ['Instagram', d.instagram],
@@ -434,7 +439,7 @@ function sendRoomLinks() {
 }
 
 function setupSheet() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = ss_();
   var sh = ss.getSheetByName(CONFIG.SHEET_NAME) || ss.insertSheet(CONFIG.SHEET_NAME);
   sh.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS])
     .setFontWeight('bold').setBackground('#2b2522').setFontColor('#eda644');
