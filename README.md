@@ -63,4 +63,6 @@ Everything happens in the sheet:
 - Hidden honeypot field stops most spam bots.
 - One submission per email every 30 days (`MIN_DAYS_BETWEEN` in the script).
 - Text starting with `=`, `+`, `-` or `@` is escaped so nobody can inject sheet formulas.
+- Only Afro house and tech house can be selected as style.
+- Artists must confirm no AI was used to make the music (AI-made tracks are not accepted).
 - Artists must confirm the music is theirs and agree to their data being stored (GDPR).
