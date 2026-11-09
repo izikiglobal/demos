@@ -14,7 +14,8 @@
 var CONFIG = {
   LABEL_NAME: 'IZIKI',
   SHEET_ID: '',                         // ID of the IZIKI Demos sheet (from its URL); empty = sheet this script is attached to
-  WEB_APP_URL: '',                      // published web app URL (…/exec), used in Listening Room links
+  WEB_APP_URL: '',                      // published web app URL (…/exec)
+  ROOM_URL: 'https://izikiglobal.github.io/demos/room.html', // Listening Room page (empty = serve it from Apps Script)
   NOTIFY_EMAIL: 'izikiteam@gmail.com',  // new-demo alerts + monthly pick (comma-separate for several)
   REPLY_TO: 'izikiteam@gmail.com',      // reply-to on the artist confirmation
   TEAM: ['Danielle', 'Mikkas'],         // listeners in the Listening Room
@@ -59,10 +60,14 @@ function doGet(e) {
 }
 
 function doPost(e) {
+  var d;
+  try { d = JSON.parse((e && e.postData && e.postData.contents) || '{}'); }
+  catch (x) { return json_({ ok: false, error: 'Bad request.' }); }
+  if (d.action) return json_(roomApi_(d)); // Listening Room calls
+
   var lock = LockService.getScriptLock();
   try {
     lock.waitLock(20000);
-    var d = JSON.parse((e && e.postData && e.postData.contents) || '{}');
 
     if (d.website) return json_({ ok: true }); // honeypot: pretend success for bots
 
@@ -98,7 +103,19 @@ function doPost(e) {
   }
 }
 
-// ---------- Listening Room API (called from Room.html) ----------
+// ---------- Listening Room API (called from room.html on GitHub Pages, or Room.html) ----------
+var ROOM_FNS = { roomData: roomData, rateTrack: rateTrack, setStatus: setStatus, saveNotes: saveNotes };
+
+function roomApi_(d) {
+  var fn = ROOM_FNS[d.action];
+  if (!fn) return { ok: false, error: 'Unknown action' };
+  try {
+    return { ok: true, result: fn.apply(null, Array.isArray(d.args) ? d.args : []) };
+  } catch (x) {
+    return { ok: false, error: x && x.message ? x.message : String(x) };
+  }
+}
+
 function roomData(key) {
   checkKey_(key);
   var demos = rows_(sheet_()).map(function (r) {
@@ -345,7 +362,8 @@ function baseUrl_() { return CONFIG.WEB_APP_URL || ScriptApp.getService().getUrl
 function roomLinks_() {
   var base = baseUrl_();
   return CONFIG.TEAM.map(function (who) {
-    return { who: who, url: base + '?view=room&key=' + roomKey_() + '&who=' + encodeURIComponent(who) };
+    var q = 'key=' + roomKey_() + '&who=' + encodeURIComponent(who);
+    return { who: who, url: CONFIG.ROOM_URL ? CONFIG.ROOM_URL + '?' + q : base + '?view=room&' + q };
   });
 }
 
