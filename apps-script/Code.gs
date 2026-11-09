@@ -77,7 +77,10 @@ function validate_(d) {
   if (!s_(d.artist)) return 'Please add your artist name.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s_(d.email))) return 'Please check your email address.';
   if (!s_(d.tracks)) return 'Please add your track title(s).';
-  if (!/^https?:\/\/\S+$/i.test(s_(d.link))) return 'Please add a valid listening link (starting with https://).';
+  var links = s_(d.link).split('\n');
+  for (var i = 0; i < links.length; i++) {
+    if (!/https?:\/\/\S+$/i.test(links[i].trim())) return 'Please add a valid listening link for every track (starting with https://).';
+  }
   if (!s_(d.style)) return 'Please choose Afro house, tech house or both.';
   if (!d.owned) return 'Please confirm the music is yours and unreleased.';
   if (!d.noAI) return 'Please confirm the music was not made with AI. We don\'t accept AI-generated tracks.';
@@ -141,11 +144,20 @@ function notifyLabel_(d, id) {
     htmlBody:
       '<div style="font-family:Georgia,serif;color:#2b2522">' +
       '<p style="font:800 12px Arial,sans-serif;letter-spacing:.2em;color:#ea6356">NEW DEMO · ' + id + '</p>' +
-      '<p><a href="' + esc_(d.link) + '" style="font:800 16px Arial,sans-serif;color:#2b2522">▶ Listen</a>' +
-      (d.download ? ' &nbsp;·&nbsp; <a href="' + esc_(d.download) + '">Download</a>' : '') + '</p>' +
+      listenLinks_(d) +
+      (d.download ? '<p><a href="' + esc_(d.download) + '">Download (WAV)</a></p>' : '') +
       '<table style="font-size:14px">' + rows + '</table>' +
       '<p style="margin-top:18px"><a href="' + url + '">Open the demo sheet</a></p></div>'
   });
+}
+
+function listenLinks_(d) {
+  var titles = String(d.tracks || '').split(' | ');
+  return String(d.link || '').split('\n').map(function (line, i) {
+    var url = (line.match(/https?:\/\/\S+/) || [''])[0];
+    return '<p style="margin:4px 0"><a href="' + esc_(url) + '" style="font:800 16px Arial,sans-serif;color:#2b2522">▶ ' +
+           esc_(titles[i] || 'Listen') + '</a></p>';
+  }).join('');
 }
 
 function confirmArtist_(d, id) {
