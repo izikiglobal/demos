@@ -1,6 +1,6 @@
 # IZIKI — Demo submissions
 
-The demo inbox for **IZIKI**, an Afro house and Afro tech house label.
+The demo inbox for **IZIKI**, an Afro house label.
 
 - Artists send unreleased music through the page at **izikiglobal.github.io/demos**.
 - Every demo lands in a Google Sheet and **izikiteam@gmail.com** gets an email alert.
