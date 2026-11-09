@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#2b2522">
+<title>IZIKI · Listening Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:ital,wght@0,400;0,700;0,800;1,400&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#2b2522; --ground-2:#36302b; --field:#231e1b;
+  --ink:#f3e6cc; --muted:#c9b79a; --dim:#8a7b67;
+  --marigold:#eda644; --coral:#ea6356; --leaf:#8fc06a; --peri:#7d7cc0;
+  --line:#4a413a;
+  --head:"Anton","Arial Narrow","Helvetica Neue",sans-serif;
+  --display:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.55}
+a{color:var(--marigold)}
+.wrap{max-width:980px;margin:0 auto;padding:32px 18px 80px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:26px}
+.wordmark{font-family:var(--display);font-weight:800;letter-spacing:.32em;font-size:.95rem;display:inline-flex;align-items:center;gap:10px}
+.wordmark::before{content:"";width:13px;height:13px;background:var(--coral);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+h1{font-family:var(--head);font-weight:400;text-transform:uppercase;letter-spacing:.01em;font-size:clamp(2rem,5vw,3rem);line-height:1;margin:10px 0 0}
+h1 span{color:var(--coral)}
+.who{font-family:var(--display);font-size:.9rem;color:var(--muted)}
+.who b{color:var(--marigold)}
+
+nav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 26px;border-bottom:1px solid var(--line);padding-bottom:16px}
+nav button,.btn{font-family:var(--display);font-weight:400;font-size:.9rem;color:var(--muted);background:none;border:1.5px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer;min-height:40px}
+nav button[aria-pressed=true]{background:var(--marigold);border-color:var(--marigold);color:var(--ground);font-weight:800}
+nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
+.btn:hover{border-color:var(--marigold);color:var(--ink)}
+.btn.primary{background:var(--marigold);border-color:var(--marigold);color:var(--ground);font-weight:800}
+
+.card{background:var(--ground-2);border-radius:4px;padding:20px 20px 18px;margin-bottom:22px;border-top:3px solid var(--marigold)}
+.card.s-Pass{opacity:.6;border-color:var(--dim)}
+.card.s-Shortlist,.card.s-Offer\ sent{border-color:var(--coral)}
+.card.s-Signed{border-color:var(--leaf)}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:baseline}
+.head h2{font-family:var(--head);font-weight:400;text-transform:uppercase;letter-spacing:.01em;font-size:1.5rem;line-height:1.1;margin:0}
+.meta{font-size:.86rem;color:var(--muted)}
+.links{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0;font-family:var(--display);font-size:.85rem}
+.note{margin:12px 0 0;color:var(--ink);font-size:.95rem;font-style:italic}
+.pill{font-family:var(--display);font-weight:800;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1.5px solid currentColor;color:var(--marigold);white-space:nowrap}
+
+.track{border-top:1px solid var(--line);margin-top:16px;padding-top:16px;display:grid;gap:10px}
+.track h3{margin:0;font-family:var(--display);font-weight:800;font-size:1.1rem}
+.track h3 small{font-weight:400;color:var(--muted);font-size:.85rem;margin-left:8px}
+.player iframe{width:100%;border:0;border-radius:3px;display:block}
+.player audio{width:100%}
+.rate{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.stars{display:inline-flex;gap:2px}
+.stars button{background:none;border:0;padding:2px 3px;font-size:1.7rem;line-height:1;color:var(--line);cursor:pointer}
+.stars button.on{color:var(--marigold)}
+.stars button:focus-visible{outline:2px solid var(--marigold);border-radius:3px}
+.label{font-family:var(--display);font-weight:800;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.comment{flex:1 1 220px;font:inherit;font-size:.92rem;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:3px;padding:8px 10px;min-height:40px}
+.others{font-size:.88rem;color:var(--muted)}
+.others b{color:var(--ink);font-family:var(--display)}
+.saved{font-family:var(--display);font-size:.8rem;color:var(--leaf)}
+
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center}
+.actions .btn{font-size:.82rem;padding:6px 12px;min-height:34px}
+.actions .btn.cur{border-color:var(--marigold);color:var(--marigold)}
+.internal{width:100%;margin-top:10px;font:inherit;font-size:.88rem;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:3px;padding:8px 10px;min-height:60px;resize:vertical}
+
+.month-nav{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.month-nav h2{font-family:var(--head);font-weight:400;text-transform:uppercase;letter-spacing:.01em;margin:0;font-size:1.5rem;min-width:9ch}
+.rank{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;background:var(--ground-2);border-radius:4px;padding:14px 16px;margin-bottom:10px}
+.rank .n{font-family:var(--display);font-weight:800;font-size:1.3rem;color:var(--muted);text-align:center}
+.rank.first{border:2px solid var(--marigold);padding:18px 16px}
+.rank.first .n{color:var(--marigold);font-size:1.6rem}
+.rank .t{font-family:var(--display);font-weight:800}
+.rank .a{color:var(--muted);font-size:.9rem}
+.rank .sc{font-family:var(--display);font-weight:800;color:var(--marigold);text-align:right;white-space:nowrap}
+.rank .sc small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+.crown{font-family:var(--display);font-weight:800;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--marigold)}
+
+.empty,.loading{color:var(--muted);font-family:var(--display);padding:40px 0;text-align:center}
+.picker{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.err{color:var(--coral)}
+@media (max-width:600px){ .rank{grid-template-columns:34px 1fr} .rank .sc{grid-column:2;text-align:left} }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header>
+    <div>
+      <div class="wordmark">IZIKI</div>
+      <h1>Listening <span>Room</span></h1>
+    </div>
+    <div class="who" id="whoLine"></div>
+  </header>
+  <nav id="tabs" hidden>
+    <button data-tab="todo" aria-pressed="true">To rate <span class="count" id="cTodo"></span></button>
+    <button data-tab="all" aria-pressed="false">All demos <span class="count" id="cAll"></span></button>
+    <button data-tab="month" aria-pressed="false">Demo of the month</button>
+  </nav>
+  <main id="main"><p class="loading">Loading demos…</p></main>
+</div>
+
+<script>
+(function () {
+  // Backend: the IZIKI Demos Apps Script web app (same one the demo form posts to)
+  var API = 'https://script.google.com/macros/s/AKfycbxOmxWGdCOJngU6kRlQCkOjVnzOiRyahI5gNTlr5c0PnpCryRTo3Fa3QsWqenX5Hw9A/exec';
+  var params = new URLSearchParams(location.search);
+  var KEY = params.get('key') || '', WHO = params.get('who') || '', BASE = location.pathname;
+  var TEAM = ['Danielle', 'Mikkas'];
+  if (TEAM.indexOf(WHO) < 0) WHO = '';
+  var STATUSES = ['Listening', 'Shortlist', 'Offer sent', 'Signed', 'Pass'];
+  var state = { demos: [], ratings: [], tab: 'todo', month: null };
+  var main = document.getElementById('main');
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function run(fn) {
+    var args = [].slice.call(arguments, 1);
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: fn, args: args }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (!j.ok) throw new Error(j.error || 'Request failed'); return j.result; });
+  }
+
+  if (!KEY) { main.innerHTML = '<p class="empty err">This link is missing its key. Use the link from the Listening Room email.</p>'; return; }
+
+  // ----- who is listening -----
+  if (!WHO) {
+    document.getElementById('whoLine').textContent = '';
+    main.innerHTML = '<p>Who is listening?</p><div class="picker">' + TEAM.map(function (t) {
+      return '<a class="btn primary" href="' + esc(BASE + '?key=' + encodeURIComponent(KEY) + '&who=' + encodeURIComponent(t)) + '">' + esc(t) + '</a>';
+    }).join('') + '</div><p class="meta" style="margin-top:18px">Tip: bookmark the page after choosing, so it remembers you.</p>';
+    return;
+  }
+  document.getElementById('whoLine').innerHTML = 'Listening as <b>' + esc(WHO) + '</b>';
+  document.getElementById('tabs').hidden = false;
+
+  // ----- helpers -----
+  function ratingOf(id, n, who) {
+    for (var i = 0; i < state.ratings.length; i++) {
+      var r = state.ratings[i];
+      if (r.id === id && r.track === n && r.who === who) return r;
+    }
+    return null;
+  }
+  function trackAvg(id, n) {
+    var s = 0, c = 0;
+    state.ratings.forEach(function (r) { if (r.id === id && r.track === n) { s += r.stars; c++; } });
+    return c ? { avg: s / c, count: c } : null;
+  }
+  function stars(n) { var r = Math.floor(n + 0.001); return '★★★★★'.slice(0, r) + '☆☆☆☆☆'.slice(0, 5 - r); }
+  function fmtDate(iso) {
+    var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  function ym(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2); }
+
+  function player(url) {
+    if (!url) return '';
+    var u = url.trim(), m;
+    if (/soundcloud\.com\//i.test(u)) {
+      return '<iframe height="120" allow="autoplay" loading="lazy" src="https://w.soundcloud.com/player/?url=' +
+        encodeURIComponent(u) + '&color=%23eda644&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false"></iframe>';
+    }
+    if ((m = u.match(/drive\.google\.com\/file\/d\/([^/?#]+)/i))) {
+      return '<iframe height="80" loading="lazy" src="https://drive.google.com/file/d/' + encodeURIComponent(m[1]) + '/preview"></iframe>';
+    }
+    if (/dropbox\.com\//i.test(u) && /\.(mp3|wav|aiff?|flac|m4a|ogg)(\?|$)/i.test(u)) {
+      var raw = u.replace(/([?&])dl=0/, '$1raw=1'); if (raw === u) raw += (u.indexOf('?') > -1 ? '&' : '?') + 'raw=1';
+      return '<audio controls preload="none" src="' + esc(raw) + '"></audio>';
+    }
+    if (/\.(mp3|wav|m4a|ogg)(\?|$)/i.test(u)) return '<audio controls preload="none" src="' + esc(u) + '"></audio>';
+    return '';
+  }
+
+  function linkList(d) {
+    var l = [['Beatport', d.beatport], ['SoundCloud', d.soundcloud], ['Spotify', d.spotify], ['Website', d.website]]
+      .filter(function (x) { return /^https?:\/\//i.test(x[1] || ''); })
+      .map(function (x) { return '<a href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + x[0] + '</a>'; });
+    if (d.instagram) {
+      var ig = String(d.instagram).replace(/^@/, '');
+      l.push('<a href="' + esc(/^https?:/.test(ig) ? ig : 'https://instagram.com/' + ig) + '" target="_blank" rel="noopener">Instagram</a>');
+    }
+    if (d.download) l.push('<a href="' + esc(d.download) + '" target="_blank" rel="noopener">Download WAV</a>');
+    if (d.email) l.push('<a href="mailto:' + esc(d.email) + '">Email artist</a>');
+    return l.join('');
+  }
+
+  function trackHtml(d, t) {
+    var mine = ratingOf(d.id, t.n, WHO);
+    var others = TEAM.filter(function (p) { return p !== WHO; }).map(function (p) {
+      var r = ratingOf(d.id, t.n, p);
+      if (!r) return esc(p) + ': not rated yet';
+      if (!mine) return esc(p) + ': rated (rate first to see)';
+      return '<b>' + esc(p) + '</b> ' + stars(r.stars) + (r.comment ? ' · “' + esc(r.comment) + '”' : '');
+    }).join(' &nbsp;·&nbsp; ');
+    var s = mine ? mine.stars : 0, btns = '';
+    for (var i = 1; i <= 5; i++) {
+      btns += '<button type="button" data-star="' + i + '" class="' + (i <= s ? 'on' : '') + '" aria-label="' + i + ' star' + (i > 1 ? 's' : '') + '">★</button>';
+    }
+    var p = player(t.url);
+    return '<div class="track" data-id="' + esc(d.id) + '" data-n="' + t.n + '">' +
+      '<h3>' + esc(t.title) + '<small>' + esc([t.style, t.bpm ? t.bpm + ' BPM' : ''].filter(Boolean).join(' · ')) + '</small></h3>' +
+      (p ? '<div class="player">' + p + '</div>' : '') +
+      '<div><a class="btn" href="' + esc(t.url) + '" target="_blank" rel="noopener">Open link ↗</a></div>' +
+      '<div class="rate"><span class="label">IZIKI fit</span><span class="stars" role="group" aria-label="IZIKI fit">' + btns + '</span>' +
+      '<input class="comment" placeholder="Comment (optional)" maxlength="300" value="' + esc(mine ? mine.comment : '') + '">' +
+      '<span class="saved" aria-live="polite"></span></div>' +
+      '<div class="others">' + others + '</div></div>';
+  }
+
+  function cardHtml(d) {
+    var tracks = d.tracks.map(function (t) { return trackHtml(d, t); }).join('');
+    var acts = STATUSES.map(function (s) {
+      return '<button type="button" class="btn' + (d.status === s ? ' cur' : '') + '" data-status="' + esc(s) + '">' + esc(s) + '</button>';
+    }).join('');
+    return '<article class="card s-' + esc(d.status) + '" data-id="' + esc(d.id) + '">' +
+      '<div class="head"><h2>' + esc(d.artist) + '</h2><span class="pill">' + esc(d.status) + '</span></div>' +
+      '<div class="meta">' + esc([d.location, fmtDate(d.received), d.type, d.previous ? 'Previous: ' + d.previous : 'First release'].filter(Boolean).join(' · ')) + '</div>' +
+      '<div class="links">' + linkList(d) + '</div>' +
+      (d.note ? '<p class="note">“' + esc(d.note) + '”</p>' : '') +
+      tracks +
+      '<div class="actions"><span class="label">Decision</span>' + acts + '</div>' +
+      '<textarea class="internal" placeholder="Internal notes (team only)">' + esc(d.notes) + '</textarea>' +
+      '</article>';
+  }
+
+  function isTodo(d) {
+    if (d.status === 'Pass' || d.status === 'Signed') return false;
+    return d.tracks.some(function (t) { return !ratingOf(d.id, t.n, WHO); });
+  }
+
+  function render() {
+    var todo = state.demos.filter(isTodo);
+    document.getElementById('cTodo').textContent = todo.length;
+    document.getElementById('cAll').textContent = state.demos.length;
+    document.querySelectorAll('nav button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.tab === state.tab); });
+    if (state.tab === 'month') return renderMonth();
+    var list = state.tab === 'todo' ? todo : state.demos;
+    main.innerHTML = list.length ? list.map(cardHtml).join('') :
+      '<p class="empty">' + (state.tab === 'todo' ? 'All caught up. Nothing left to rate.' : 'No demos yet.') + '</p>';
+  }
+
+  function renderMonth() {
+    var cur = state.month || new Date();
+    var key = ym(cur);
+    var rows = [];
+    state.demos.forEach(function (d) {
+      if (ym(new Date(d.received)) !== key) return;
+      d.tracks.forEach(function (t) {
+        var a = trackAvg(d.id, t.n);
+        if (a) rows.push({ d: d, t: t, avg: a.avg, count: a.count, full: a.count >= TEAM.length });
+      });
+    });
+    rows.sort(function (a, b) { return (b.full - a.full) || (b.avg - a.avg) || (b.count - a.count) || (new Date(a.d.received) - new Date(b.d.received)); });
+    var label = cur.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    var now = new Date(), isCurrent = key === ym(now);
+    main.innerHTML =
+      '<div class="month-nav"><button class="btn" data-m="-1" aria-label="Previous month">←</button><h2>' + esc(label) + '</h2>' +
+      '<button class="btn" data-m="1" aria-label="Next month"' + (isCurrent ? ' disabled' : '') + '>→</button></div>' +
+      '<p class="meta" style="margin:-6px 0 18px">' + (isCurrent ? 'Live ranking. The winner is picked automatically on the 1st and emailed to the team.' :
+        'Final ranking for ' + esc(label) + '.') + ' Tracks rated by both of you rank first.</p>' +
+      (rows.length ? rows.map(function (r, i) {
+        return '<div class="rank' + (i === 0 ? ' first' : '') + '"><div class="n">' + (i + 1) + '</div><div>' +
+          (i === 0 ? '<div class="crown">' + (isCurrent ? 'Leading' : 'Demo of the month') + '</div>' : '') +
+          '<div class="t">' + esc(r.t.title) + '</div><div class="a">' + esc(r.d.artist) + ' · ' + esc(r.t.style) +
+          ' · <a href="' + esc(r.t.url) + '" target="_blank" rel="noopener">Listen</a></div></div>' +
+          '<div class="sc">' + stars(r.avg) + ' ' + r.avg.toFixed(1) + '<small>' + r.count + ' of ' + TEAM.length + ' rated</small></div></div>';
+      }).join('') : '<p class="empty">No rated tracks for this month yet.</p>');
+  }
+
+  // ----- events -----
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-tab]'); if (!b) return;
+    state.tab = b.dataset.tab; render(); window.scrollTo(0, 0);
+  });
+
+  main.addEventListener('click', function (e) {
+    var m = e.target.closest('button[data-m]');
+    if (m) { var c = state.month || new Date(); state.month = new Date(c.getFullYear(), c.getMonth() + Number(m.dataset.m), 1); renderMonth(); return; }
+
+    var star = e.target.closest('button[data-star]');
+    if (star) {
+      var tr = star.closest('.track'), id = tr.dataset.id, n = Number(tr.dataset.n), val = Number(star.dataset.star);
+      var comment = tr.querySelector('.comment').value;
+      save(tr, id, n, val, comment);
+      return;
+    }
+    var st = e.target.closest('button[data-status]');
+    if (st) {
+      var card = st.closest('.card'), did = card.dataset.id, status = st.dataset.status;
+      run('setStatus', KEY, did, status).then(function () {
+        state.demos.forEach(function (d) { if (d.id === did) d.status = status; });
+        card.className = 'card s-' + status;
+        card.querySelector('.pill').textContent = status;
+        card.querySelectorAll('[data-status]').forEach(function (b) { b.classList.toggle('cur', b.dataset.status === status); });
+      }).catch(fail);
+    }
+  });
+
+  main.addEventListener('change', function (e) {
+    if (e.target.classList.contains('comment')) {
+      var tr = e.target.closest('.track'), mine = ratingOf(tr.dataset.id, Number(tr.dataset.n), WHO);
+      if (mine) save(tr, tr.dataset.id, Number(tr.dataset.n), mine.stars, e.target.value);
+      else tr.querySelector('.saved').textContent = 'Pick stars to save';
+    }
+    if (e.target.classList.contains('internal')) {
+      var id = e.target.closest('.card').dataset.id, text = e.target.value;
+      run('saveNotes', KEY, id, text).then(function () {
+        state.demos.forEach(function (d) { if (d.id === id) d.notes = text; });
+      }).catch(fail);
+    }
+  });
+
+  function save(tr, id, n, val, comment) {
+    var msg = tr.querySelector('.saved'); msg.textContent = 'Saving…'; msg.classList.remove('err');
+    tr.querySelectorAll('[data-star]').forEach(function (b) { b.classList.toggle('on', Number(b.dataset.star) <= val); });
+    run('rateTrack', KEY, WHO, id, n, val, comment).then(function () {
+      var r = ratingOf(id, n, WHO);
+      if (r) { r.stars = val; r.comment = comment; } else state.ratings.push({ id: id, track: n, who: WHO, stars: val, comment: comment });
+      var d = state.demos.filter(function (x) { return x.id === id; })[0];
+      if (d && d.status === 'New') d.status = 'Listening';
+      tr.outerHTML = trackHtml(d, d.tracks[n - 1]);
+      var fresh = main.querySelector('.track[data-id="' + id + '"][data-n="' + n + '"] .saved');
+      if (fresh) fresh.textContent = 'Saved';
+      document.getElementById('cTodo').textContent = state.demos.filter(isTodo).length;
+    }).catch(function (err) { msg.textContent = 'Could not save'; msg.classList.add('err'); console.error(err); });
+  }
+
+  function fail(err) { alertBox('Something went wrong: ' + (err && err.message || err)); }
+  function alertBox(t) { var p = document.createElement('p'); p.className = 'err'; p.textContent = t; main.prepend(p); }
+
+  run('roomData', KEY).then(function (json) {
+    var data = JSON.parse(json);
+    state.demos = data.demos; state.ratings = data.ratings;
+    render();
+  }).catch(function (err) { main.innerHTML = '<p class="empty err">Could not load demos. ' + esc(err && err.message) + '</p>'; });
+})();
+</script>
+</body>
+</html>
