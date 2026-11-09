@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>IZIKI — Send us your demo</title>
-<meta name="description" content="IZIKI is listening. Send your unreleased house music to the label.">
+<meta name="description" content="IZIKI is listening. Send your unreleased Afro house and tech house to the label.">
 <meta property="og:title" content="IZIKI — Demo submissions">
-<meta property="og:description" content="The gate is open. Send us your unreleased house music.">
+<meta property="og:description" content="The gate is open. Send us your unreleased Afro house and tech house.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="img/og.jpg">
 <meta name="theme-color" content="#2b2522">
@@ -121,20 +121,18 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
     <div>
       <div class="wordmark">IZIKI</div>
       <h1>The gate is open. <span>Send us your demo.</span></h1>
-      <p class="intro">IZIKI is a house label rooted in Afro-Latin rhythm, drums and soul. We listen to every demo that comes through here. If a track moves us, it could end up on one of our painted sleeves.</p>
+      <p class="intro">IZIKI is a house label for Afro house and tech house: drums, groove and soul. We listen to every demo that comes through here. If a track moves us, it could end up on one of our painted sleeves.</p>
       <div class="chips">
         <span class="chip" style="color:var(--marigold)">Afro house</span>
-        <span class="chip" style="color:var(--coral)">Latin &amp; organic house</span>
-        <span class="chip" style="color:var(--leaf)">Deep house</span>
-        <span class="chip" style="color:var(--peri)">Percussive &amp; tribal</span>
+        <span class="chip" style="color:var(--coral)">Tech house</span>
       </div>
     </div>
   </section>
 
   <ul class="rules">
     <li style="--c:var(--marigold)"><b>Unreleased only</b><p>Original music that hasn't been released or signed anywhere else.</p></li>
-    <li style="--c:var(--coral)"><b>Private links</b><p>A private SoundCloud, Dropbox or Google Drive link. Please, no attachments.</p></li>
-    <li style="--c:var(--leaf)"><b>Up to 3 tracks</b><p>Send your strongest work. Full-length, mixed, not mastered is fine.</p></li>
+    <li style="--c:var(--coral)"><b>No AI-made music</b><p>We don't accept tracks generated with AI, in whole or in part. Made by humans only.</p></li>
+    <li style="--c:var(--leaf)"><b>Private links, up to 3 tracks</b><p>A private SoundCloud, Dropbox or Google Drive link. No attachments. Unmastered is fine.</p></li>
     <li style="--c:var(--peri)"><b>Give us time</b><p>We reply within 4 weeks if we want to go further. One submission per month, please.</p></li>
   </ul>
 
@@ -147,26 +145,31 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
       <div class="field"><label for="realname">Your real name</label><input id="realname" name="realName" type="text" maxlength="80" autocomplete="name"></div>
       <div class="field"><label for="email">Email <span class="req">*</span></label><input id="email" name="email" type="email" required maxlength="120" autocomplete="email"></div>
       <div class="field"><label for="location">City, country</label><input id="location" name="location" type="text" maxlength="80" placeholder="Copenhagen, Denmark"></div>
-      <div class="field"><label for="instagram">Instagram</label><input id="instagram" name="instagram" type="text" maxlength="80" placeholder="@yourname"></div>
-      <div class="field"><label for="profile">SoundCloud / Spotify / website</label><input id="profile" name="profile" type="url" maxlength="300" placeholder="https://"></div>
     </fieldset>
 
     <fieldset>
-      <legend><span class="num">02</span> The music</legend>
+      <legend><span class="num">02</span> Where to find you</legend>
+      <p class="hint full" style="margin-top:-12px">One link per box. Fill in the ones you have.</p>
+      <div class="field full"><label for="beatport">Beatport artist page</label><input id="beatport" name="beatport" type="url" maxlength="300" placeholder="https://www.beatport.com/artist/your-name/123456"><p class="hint">Please add it if you have released music. It helps us a lot.</p></div>
+      <div class="field"><label for="soundcloud">SoundCloud</label><input id="soundcloud" name="soundcloud" type="url" maxlength="300" placeholder="https://soundcloud.com/your-name"></div>
+      <div class="field"><label for="spotify">Spotify</label><input id="spotify" name="spotify" type="url" maxlength="300" placeholder="https://open.spotify.com/artist/…"></div>
+      <div class="field"><label for="instagram">Instagram</label><input id="instagram" name="instagram" type="text" maxlength="80" placeholder="@yourname"></div>
+      <div class="field"><label for="ra">Resident Advisor</label><input id="ra" name="ra" type="url" maxlength="300" placeholder="https://ra.co/dj/your-name"></div>
+      <div class="field full"><label for="website-url">Website</label><input id="website-url" name="site" type="url" maxlength="300" placeholder="https://"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="num">03</span> The music</legend>
       <div class="field full"><label for="tracks">Track title(s) <span class="req">*</span></label><input id="tracks" name="tracks" type="text" required maxlength="240" placeholder="Track one, Track two"></div>
       <div class="field full"><label for="link">Private listening link <span class="req">*</span></label><input id="link" name="link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/sets/demo/s-xxxx"><p class="hint">Private SoundCloud link, Dropbox or Google Drive folder. Make sure anyone with the link can listen.</p></div>
       <div class="field full"><label for="download">Download link (WAV)</label><input id="download" name="download" type="url" maxlength="500" placeholder="https://"><p class="hint">Optional. Helps us test tracks in a set.</p></div>
       <div class="field full">
-        <span class="q" id="style-q">Style</span>
-        <div class="pills" role="group" aria-labelledby="style-q">
+        <span class="q" id="style-q">Style <span class="req">*</span></span>
+        <div class="pills" role="group" aria-labelledby="style-q" id="styles">
           <label><input type="checkbox" name="style" value="Afro house"><span>Afro house</span></label>
-          <label><input type="checkbox" name="style" value="Latin house"><span>Latin house</span></label>
-          <label><input type="checkbox" name="style" value="Organic house"><span>Organic house</span></label>
-          <label><input type="checkbox" name="style" value="Deep house"><span>Deep house</span></label>
-          <label><input type="checkbox" name="style" value="Melodic house"><span>Melodic house</span></label>
           <label><input type="checkbox" name="style" value="Tech house"><span>Tech house</span></label>
-          <label><input type="checkbox" name="style" value="Other"><span>Something else</span></label>
         </div>
+        <p class="hint">We only sign Afro house and tech house.</p>
       </div>
       <div class="field"><label for="bpm">BPM</label><input id="bpm" name="bpm" type="number" min="60" max="180" inputmode="numeric" placeholder="122"></div>
       <div class="field"><label for="type">Release type</label>
@@ -180,8 +183,9 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
     </fieldset>
 
     <fieldset>
-      <legend><span class="num">03</span> The fine print</legend>
+      <legend><span class="num">04</span> The fine print</legend>
       <label class="check full"><input type="checkbox" name="owned" required><span>The music is my own, unreleased and not signed to another label. All samples and vocals are cleared or cleared-able. <span class="req">*</span></span></label>
+      <label class="check full"><input type="checkbox" name="noAI" required><span>No part of this music was generated with AI tools (no AI-generated tracks, stems, vocals or melodies). <span class="req">*</span></span></label>
       <label class="check full"><input type="checkbox" name="consent" required><span>IZIKI may store my details to review this demo and contact me about it. I can ask for them to be deleted at any time. <span class="req">*</span></span></label>
       <div class="field"><label for="heard">How did you find us?</label>
         <select id="heard" name="heard"><option value="">Choose…</option><option>Instagram</option><option>A release / Beatport / Spotify</option><option>A friend or artist</option><option>A party / DJ set</option><option>Other</option></select>
@@ -224,6 +228,11 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+    if (!form.querySelector('input[name=style]:checked')) {
+      say('Please choose Afro house, tech house or both.', true);
+      form.querySelector('input[name=style]').focus();
+      return;
+    }
     if (!form.checkValidity()) {
       var bad = form.querySelector(':invalid');
       say('Please fill in the fields marked *.', true);
@@ -232,7 +241,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
     }
     var fd = new FormData(form), data = {};
     fd.forEach(function (v, k) { data[k] = data[k] ? data[k] + ', ' + v : v; });
-    data.owned = !!data.owned; data.consent = !!data.consent;
+    data.owned = !!data.owned; data.noAI = !!data.noAI; data.consent = !!data.consent;
 
     if (API.indexOf('https://script.google.com/') !== 0) {
       say('Preview mode: no backend connected yet.', true);
