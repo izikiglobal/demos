@@ -253,7 +253,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
 
   <footer>
     <span>IZIKI · House music with roots</span>
-    <span>Questions? <a href="mailto:demos@iziki.example">demos@iziki.example</a></span>
+    <span>Questions? <a href="mailto:izikiteam@gmail.com">izikiteam@gmail.com</a></span>
   </footer>
 </div>
 
@@ -301,13 +301,13 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
     for (var i = 1; i <= n; i++) {
       titles.push(data['t' + i + '_title']);
       links.push((n > 1 ? i + '. ' : '') + data['t' + i + '_link']);
-      if (styles.indexOf(data['t' + i + '_style']) < 0) styles.push(data['t' + i + '_style']);
+      styles.push(data['t' + i + '_style']);
       bpms.push(data['t' + i + '_bpm'] || '–');
       ['title', 'link', 'style', 'bpm'].forEach(function (k) { delete data['t' + i + '_' + k]; });
     }
     data.tracks = titles.join(' | ');
     data.link = links.join('\n');
-    data.style = styles.join(', ');
+    data.style = styles.join(' / ');
     data.bpm = n > 1 ? bpms.join(' / ') : (bpms[0] === '–' ? '' : bpms[0]);
 
     if (API.indexOf('https://script.google.com/') !== 0) {
