@@ -23,7 +23,8 @@ GitHub Pages (index.html)  ──POST──▶  Google Apps Script  ──▶  G
 | `index.html` | The submission page |
 | `img/` | Papa Legba artwork and the social share image |
 | `apps-script/Code.gs` | The backend: form handling, emails, ratings, monthly pick |
-| `apps-script/Room.html` | The Listening Room page |
+| `room.html` | The Listening Room (private links only) |
+| `apps-script/Room.html` | Backup copy of the Listening Room served by Apps Script |
 
 ## The Google Sheet
 
