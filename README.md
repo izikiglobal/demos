@@ -64,7 +64,7 @@ The links contain a secret key. Keep them inside the team.
 - Required fields are checked on the page *and* on the server.
 - Hidden honeypot field stops most spam bots.
 - One submission per email every 30 days (`MIN_DAYS_BETWEEN` in the script).
-- Only Afro house and Afro tech house can be selected as style.
+- Styles: Afro house, Afrotech, Tribal or 3 Step, plus Final master or Demo for each track.
 - Artists must confirm no AI was used to make the music (AI-made tracks are not accepted).
 - Text starting with `=`, `+`, `-` or `@` is escaped so nobody can inject sheet formulas.
 - Artists must confirm the music is theirs and agree to their data being stored (GDPR).

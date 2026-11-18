@@ -4,12 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>IZIKI — Send us your demo</title>
-<meta name="description" content="IZIKI is listening. Send your unreleased Afro house and Afro tech house to the label.">
+<meta name="description" content="IZIKI is listening. Send your unreleased Afro house, Afrotech, Tribal and 3 Step to the label.">
 <meta property="og:title" content="IZIKI — Demo submissions">
-<meta property="og:description" content="The gate is open. Send us your unreleased Afro house and Afro tech house.">
+<meta property="og:description" content="The gate is open. Send us your unreleased Afro house, Afrotech, Tribal and 3 Step.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="img/og.jpg">
 <meta name="theme-color" content="#2b2522">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:ital,wght@0,400;0,700;0,800;1,400&display=swap">
@@ -133,7 +135,9 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
       <p class="intro">IZIKI is an Afro house label: drums, groove and soul. We listen to every demo that comes through here. If a track moves us, it could end up on one of our painted sleeves.</p>
       <div class="chips">
         <span class="chip" style="color:var(--marigold)">Afro house</span>
-        <span class="chip" style="color:var(--coral)">Afro tech house</span>
+        <span class="chip" style="color:var(--coral)">Afrotech</span>
+        <span class="chip" style="color:var(--leaf)">Tribal</span>
+        <span class="chip" style="color:var(--peri)">3 Step</span>
       </div>
     </div>
   </section>
@@ -141,7 +145,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
   <ul class="rules">
     <li style="--c:var(--marigold)"><b>Unreleased only</b><p>Original music that hasn't been released or signed anywhere else.</p></li>
     <li style="--c:var(--coral)"><b>No AI-made music</b><p>We don't accept tracks generated with AI. Made by humans only.</p></li>
-    <li style="--c:var(--leaf)"><b>Private links, up to 3 tracks</b><p>A private SoundCloud, Dropbox or Google Drive link. No attachments. Unmastered is fine.</p></li>
+    <li style="--c:var(--leaf)"><b>Private links, up to 3 tracks</b><p>A private SoundCloud link, set to allow downloads. No attachments. Unmastered is fine.</p></li>
     <li style="--c:var(--peri)"><b>Give us time</b><p>We reply within 4 weeks if we want to go further. One submission per month, please.</p></li>
   </ul>
 
@@ -163,7 +167,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
       <div class="field"><label for="soundcloud">SoundCloud</label><input id="soundcloud" name="soundcloud" type="url" maxlength="300" placeholder="https://soundcloud.com/your-name"></div>
       <div class="field"><label for="spotify">Spotify</label><input id="spotify" name="spotify" type="url" maxlength="300" placeholder="https://open.spotify.com/artist/…"></div>
       <div class="field"><label for="instagram">Instagram</label><input id="instagram" name="instagram" type="text" maxlength="80" placeholder="@yourname"></div>
-      <div class="field"><label for="website-url">Website</label><input id="website-url" name="site" type="url" maxlength="300" placeholder="https://"></div>
+      <div class="field"><label for="website-url">Website or promokit link</label><input id="website-url" name="site" type="url" maxlength="300" placeholder="https://"></div>
     </fieldset>
 
     <fieldset>
@@ -175,18 +179,27 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
           <label><input type="radio" name="trackCount" value="2"><span>2 tracks</span></label>
           <label><input type="radio" name="trackCount" value="3"><span>3 tracks</span></label>
         </div>
-        <p class="hint">We only sign Afro house and Afro tech house. Make sure anyone with the link can listen (private SoundCloud, Dropbox or Google Drive).</p>
+        <p class="hint">We sign Afro house, Afrotech, Tribal and 3 Step. Use a private SoundCloud link with downloads switched on.</p>
       </div>
       <div class="tracks full" id="tracks">
         <div class="track" data-track="1">
           <h3 class="track-h">Track 1</h3>
           <div class="field full"><label for="t1_title">Track title <span class="req">*</span></label><input id="t1_title" name="t1_title" type="text" required maxlength="120"></div>
-          <div class="field full"><label for="t1_link">Private listening link <span class="req">*</span></label><input id="t1_link" name="t1_link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/track/s-xxxx"></div>
-          <div class="field">
+          <div class="field full"><label for="t1_link">Private SoundCloud listening link (Set to download) <span class="req">*</span></label><input id="t1_link" name="t1_link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/track/s-xxxx"></div>
+          <div class="field full">
             <span class="q" id="t1_style_q">Style <span class="req">*</span></span>
             <div class="pills" role="radiogroup" aria-labelledby="t1_style_q">
               <label><input type="radio" name="t1_style" value="Afro house" required><span>Afro house</span></label>
-              <label><input type="radio" name="t1_style" value="Afro tech house" required><span>Afro tech house</span></label>
+              <label><input type="radio" name="t1_style" value="Afrotech" required><span>Afrotech</span></label>
+              <label><input type="radio" name="t1_style" value="Tribal" required><span>Tribal</span></label>
+              <label><input type="radio" name="t1_style" value="3 Step" required><span>3 Step</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="q" id="t1_ver_q">Final master or demo? <span class="req">*</span></span>
+            <div class="pills" role="radiogroup" aria-labelledby="t1_ver_q">
+              <label><input type="radio" name="t1_ver" value="Final master" required><span>Final master</span></label>
+              <label><input type="radio" name="t1_ver" value="Demo" required><span>Demo</span></label>
             </div>
           </div>
           <div class="field"><label for="t1_bpm">BPM</label><input id="t1_bpm" name="t1_bpm" type="number" min="60" max="180" inputmode="numeric" placeholder="122"></div>
@@ -194,12 +207,21 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
         <div class="track" data-track="2" hidden>
           <h3 class="track-h">Track 2</h3>
           <div class="field full"><label for="t2_title">Track title <span class="req">*</span></label><input id="t2_title" name="t2_title" type="text" required maxlength="120" disabled></div>
-          <div class="field full"><label for="t2_link">Private listening link <span class="req">*</span></label><input id="t2_link" name="t2_link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/track/s-xxxx" disabled></div>
-          <div class="field">
+          <div class="field full"><label for="t2_link">Private SoundCloud listening link (Set to download) <span class="req">*</span></label><input id="t2_link" name="t2_link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/track/s-xxxx" disabled></div>
+          <div class="field full">
             <span class="q" id="t2_style_q">Style <span class="req">*</span></span>
             <div class="pills" role="radiogroup" aria-labelledby="t2_style_q">
               <label><input type="radio" name="t2_style" value="Afro house" required disabled><span>Afro house</span></label>
-              <label><input type="radio" name="t2_style" value="Afro tech house" required disabled><span>Afro tech house</span></label>
+              <label><input type="radio" name="t2_style" value="Afrotech" required disabled><span>Afrotech</span></label>
+              <label><input type="radio" name="t2_style" value="Tribal" required disabled><span>Tribal</span></label>
+              <label><input type="radio" name="t2_style" value="3 Step" required disabled><span>3 Step</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="q" id="t2_ver_q">Final master or demo? <span class="req">*</span></span>
+            <div class="pills" role="radiogroup" aria-labelledby="t2_ver_q">
+              <label><input type="radio" name="t2_ver" value="Final master" required disabled><span>Final master</span></label>
+              <label><input type="radio" name="t2_ver" value="Demo" required disabled><span>Demo</span></label>
             </div>
           </div>
           <div class="field"><label for="t2_bpm">BPM</label><input id="t2_bpm" name="t2_bpm" type="number" min="60" max="180" inputmode="numeric" placeholder="122" disabled></div>
@@ -207,12 +229,21 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
         <div class="track" data-track="3" hidden>
           <h3 class="track-h">Track 3</h3>
           <div class="field full"><label for="t3_title">Track title <span class="req">*</span></label><input id="t3_title" name="t3_title" type="text" required maxlength="120" disabled></div>
-          <div class="field full"><label for="t3_link">Private listening link <span class="req">*</span></label><input id="t3_link" name="t3_link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/track/s-xxxx" disabled></div>
-          <div class="field">
+          <div class="field full"><label for="t3_link">Private SoundCloud listening link (Set to download) <span class="req">*</span></label><input id="t3_link" name="t3_link" type="url" required maxlength="500" placeholder="https://soundcloud.com/you/track/s-xxxx" disabled></div>
+          <div class="field full">
             <span class="q" id="t3_style_q">Style <span class="req">*</span></span>
             <div class="pills" role="radiogroup" aria-labelledby="t3_style_q">
               <label><input type="radio" name="t3_style" value="Afro house" required disabled><span>Afro house</span></label>
-              <label><input type="radio" name="t3_style" value="Afro tech house" required disabled><span>Afro tech house</span></label>
+              <label><input type="radio" name="t3_style" value="Afrotech" required disabled><span>Afrotech</span></label>
+              <label><input type="radio" name="t3_style" value="Tribal" required disabled><span>Tribal</span></label>
+              <label><input type="radio" name="t3_style" value="3 Step" required disabled><span>3 Step</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="q" id="t3_ver_q">Final master or demo? <span class="req">*</span></span>
+            <div class="pills" role="radiogroup" aria-labelledby="t3_ver_q">
+              <label><input type="radio" name="t3_ver" value="Final master" required disabled><span>Final master</span></label>
+              <label><input type="radio" name="t3_ver" value="Demo" required disabled><span>Demo</span></label>
             </div>
           </div>
           <div class="field"><label for="t3_bpm">BPM</label><input id="t3_bpm" name="t3_bpm" type="number" min="60" max="180" inputmode="numeric" placeholder="122" disabled></div>
@@ -252,7 +283,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
   </section>
 
   <footer>
-    <span>IZIKI · Afro house &amp; Afro tech house</span>
+    <span>IZIKI · Afro house · Afrotech · Tribal · 3 Step</span>
     <span>Questions? <a href="mailto:izikiteam@gmail.com">izikiteam@gmail.com</a></span>
   </footer>
 </div>
@@ -301,9 +332,9 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:v
     for (var i = 1; i <= n; i++) {
       titles.push(data['t' + i + '_title']);
       links.push((n > 1 ? i + '. ' : '') + data['t' + i + '_link']);
-      styles.push(data['t' + i + '_style']);
+      styles.push(data['t' + i + '_style'] + ' · ' + data['t' + i + '_ver']);
       bpms.push(data['t' + i + '_bpm'] || '–');
-      ['title', 'link', 'style', 'bpm'].forEach(function (k) { delete data['t' + i + '_' + k]; });
+      ['title', 'link', 'style', 'ver', 'bpm'].forEach(function (k) { delete data['t' + i + '_' + k]; });
     }
     data.tracks = titles.join(' | ');
     data.link = links.join('\n');
