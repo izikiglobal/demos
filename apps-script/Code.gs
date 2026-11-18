@@ -191,35 +191,47 @@ function monthlyPick() {
   var start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   var end = new Date(now.getFullYear(), now.getMonth(), 1);
   var month = Utilities.formatDate(start, CONFIG.TIMEZONE, 'MMMM yyyy');
-  var best = bestOf_(start, end);
+  var top = topOf_(start, end, 3);
   var room = roomLinks_()[0].url;
 
-  if (!best) {
-    MailApp.sendEmail({ to: teamRecipients_(), subject: 'IZIKI · Demo of the month · ' + month,
+  if (!top.length) {
+    MailApp.sendEmail({ to: teamRecipients_(), subject: 'IZIKI · Top 3 of the month · ' + month,
       htmlBody: '<p>No rated demos for ' + month + '.</p>' });
     return;
   }
   var ps = picksSheet_();
-  ps.appendRow([month, best.id, best.artist, best.title, best.avg, best.count, best.url, best.email]);
+  top.forEach(function (t, i) {
+    ps.appendRow([month + ' · #' + (i + 1), t.id, t.artist, t.title, Math.round(t.avg * 10) / 10, t.count, t.url, t.email]);
+  });
+
+  var medals = ['1ST', '2ND', '3RD'];
+  var items = top.map(function (t, i) {
+    return '<div style="border-top:1px solid #4a413a;padding:16px 0">' +
+      '<p style="font:800 11px Arial,sans-serif;letter-spacing:.24em;color:#eda644;margin:0">' + medals[i] + '</p>' +
+      '<p style="font:800 ' + (i ? 20 : 26) + 'px Arial,sans-serif;line-height:1.15;margin:6px 0 2px">' + esc_(t.title) + '</p>' +
+      '<p style="font:500 16px Arial,sans-serif;margin:0 0 8px;color:#ea6356">' + esc_(t.artist) + '</p>' +
+      '<p style="font-size:18px;color:#eda644;margin:0">' + stars_(t.avg) + ' <span style="font-size:14px;color:#c9b79a">' +
+        t.avg.toFixed(1) + ' IZIKI fit · ' + t.count + ' of ' + CONFIG.TEAM.length + ' rated</span></p>' +
+      '<p style="margin:10px 0 0"><a href="' + esc_(t.url) + '" style="color:#eda644;font:800 15px Arial,sans-serif">▶ Listen</a>' +
+      ' &nbsp;·&nbsp; <a href="mailto:' + esc_(t.email) + '" style="color:#f3e6cc">Email the artist</a></p></div>';
+  }).join('');
 
   MailApp.sendEmail({
     to: teamRecipients_(),
-    subject: 'IZIKI · Demo of the month · ' + month + ' — ' + best.artist,
+    subject: 'IZIKI · Top 3 of the month · ' + month + ' — ' + top[0].artist,
     htmlBody:
       '<div style="background:#2b2522;padding:32px 26px;font-family:Georgia,serif;color:#f3e6cc;line-height:1.6">' +
-      '<p style="font:800 12px Arial,sans-serif;letter-spacing:.24em;color:#eda644;margin:0">DEMO OF THE MONTH · ' + esc_(month.toUpperCase()) + '</p>' +
-      '<p style="font:800 28px Arial,sans-serif;line-height:1.1;margin:14px 0 6px">' + esc_(best.title) + '</p>' +
-      '<p style="font:500 18px Arial,sans-serif;margin:0 0 16px;color:#ea6356">' + esc_(best.artist) + '</p>' +
-      '<p style="font-size:22px;color:#eda644;margin:0">' + stars_(best.avg) + ' <span style="font-size:15px;color:#c9b79a">' +
-        best.avg.toFixed(1) + ' IZIKI fit · ' + best.count + ' ratings</span></p>' +
-      '<p style="margin-top:20px"><a href="' + esc_(best.url) + '" style="color:#eda644;font:800 16px Arial,sans-serif">▶ Listen</a>' +
-      ' &nbsp;·&nbsp; <a href="mailto:' + esc_(best.email) + '" style="color:#f3e6cc">Email the artist</a>' +
-      ' &nbsp;·&nbsp; <a href="' + esc_(room) + '" style="color:#f3e6cc">Open the Listening Room</a></p></div>'
+      '<p style="font:800 12px Arial,sans-serif;letter-spacing:.24em;color:#eda644;margin:0 0 14px">TOP 3 OF THE MONTH · ' + esc_(month.toUpperCase()) + '</p>' +
+      items +
+      '<p style="margin-top:20px"><a href="' + esc_(room) + '" style="color:#f3e6cc;font:800 15px Arial,sans-serif">Open the Listening Room to decide →</a></p></div>'
   });
 }
 
-/** Best rated track among demos received in [start, end). Tracks rated by the whole team come first. */
-function bestOf_(start, end) {
+/** Best rated track (kept for compatibility). */
+function bestOf_(start, end) { return topOf_(start, end, 1)[0] || null; }
+
+/** Top-rated tracks among demos received in [start, end). Tracks rated by the whole team come first. */
+function topOf_(start, end, n) {
   var demos = {};
   rows_(sheet_()).forEach(function (r) {
     var t = new Date(r['Received']);
@@ -240,7 +252,7 @@ function bestOf_(start, end) {
   list.sort(function (a, b) {
     return (b.full - a.full) || (b.avg - a.avg) || (b.count - a.count) || (a.received - b.received);
   });
-  return list[0] || null;
+  return list.slice(0, n || 1);
 }
 
 // ---------- helpers ----------
@@ -252,7 +264,7 @@ function validate_(d) {
   for (var i = 0; i < links.length; i++) {
     if (!/https?:\/\/\S+$/i.test(links[i].trim())) return 'Please add a valid listening link for every track (starting with https://).';
   }
-  if (!s_(d.style)) return 'Please choose Afro house or Afro tech house for every track.';
+  if (!s_(d.style)) return 'Please choose a style (Afro house, Afrotech, Tribal or 3 Step) for every track.';
   if (!d.owned) return 'Please confirm the music is yours and unreleased.';
   if (!d.noAI) return 'Please confirm the music was not made with AI. We don\'t accept AI-generated tracks.';
   if (!d.consent) return 'Please agree that we may store your details.';
