@@ -68,6 +68,10 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
 .others{font-size:.88rem;color:var(--muted)}
 .others b{color:var(--ink);font-family:var(--display)}
 .saved{font-family:var(--display);font-size:.8rem;color:var(--leaf)}
+.saved.todo{color:var(--marigold)}
+.btn.save{font-weight:800}
+.btn.save.done{color:var(--leaf);border-color:var(--leaf);cursor:default}
+.btn.save:disabled:not(.done){opacity:.5;cursor:default}
 
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center}
 .actions .btn{font-size:.82rem;padding:6px 12px;min-height:34px}
@@ -228,12 +232,14 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
     var p = player(t.url), ts = trackState(d.id, t.n), avg = trackAvg(d.id, t.n);
     var waiting = TEAM.filter(function (x) { return !ratingOf(d.id, t.n, x); });
     var tlabel = ts === 'none' ? 'Not rated yet' : ts === 'done' ? 'Rated by both · ' + avg.avg.toFixed(1) + ' ★' : 'Waiting for ' + waiting.join(' & ');
-    return '<div class="track" data-id="' + esc(d.id) + '" data-n="' + t.n + '">' +
+    return '<div class="track" data-id="' + esc(d.id) + '" data-n="' + t.n + '" data-val="' + s + '">' +
       '<h3>' + esc(t.title) + '<span class="tstat ' + ts + '">' + esc(tlabel) + '</span><small>' + esc([t.style, t.bpm ? t.bpm + ' BPM' : ''].filter(Boolean).join(' · ')) + '</small></h3>' +
       (p ? '<div class="player">' + p + '</div>' : '') +
       '<div><a class="btn" href="' + esc(t.url) + '" target="_blank" rel="noopener">Open link ↗</a></div>' +
       '<div class="rate"><span class="label">IZIKI fit</span><span class="stars" role="group" aria-label="IZIKI fit">' + btns + '</span>' +
       '<input class="comment" placeholder="Comment (optional)" maxlength="300" value="' + esc(mine ? mine.comment : '') + '">' +
+      (mine ? '<button type="button" class="btn save done" data-save disabled>Saved ✓</button>'
+            : '<button type="button" class="btn save" data-save disabled>Save rating</button>') +
       '<span class="saved" aria-live="polite"></span></div>' +
       '<div class="others">' + others + '</div></div>';
   }
@@ -247,7 +253,8 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
       '<div class="links">' + linkList(d) + '</div>' +
       (d.note ? '<p class="note">“' + esc(d.note) + '”</p>' : '') +
       tracks +
-      '<textarea class="internal" placeholder="Internal notes (team only)">' + esc(d.notes) + '</textarea>' +
+      '<textarea class="internal" placeholder="Internal notes (team only, saved automatically)">' + esc(d.notes) + '</textarea>' +
+      '<span class="saved notes-msg" aria-live="polite"></span>' +
       '</article>';
   }
 
@@ -311,9 +318,16 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
 
     var star = e.target.closest('button[data-star]');
     if (star) {
-      var tr = star.closest('.track'), id = tr.dataset.id, n = Number(tr.dataset.n), val = Number(star.dataset.star);
-      var comment = tr.querySelector('.comment').value;
-      save(tr, id, n, val, comment);
+      var tr = star.closest('.track'), val = Number(star.dataset.star);
+      tr.dataset.val = val;
+      tr.querySelectorAll('[data-star]').forEach(function (b) { b.classList.toggle('on', Number(b.dataset.star) <= val); });
+      markDirty(tr);
+      return;
+    }
+    var sv = e.target.closest('button[data-save]');
+    if (sv) {
+      var t2 = sv.closest('.track');
+      if (Number(t2.dataset.val) > 0) save(t2, t2.dataset.id, Number(t2.dataset.n), Number(t2.dataset.val), t2.querySelector('.comment').value);
       return;
     }
     var st = e.target.closest('button[data-status]');
@@ -326,23 +340,34 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
     }
   });
 
+  // Stars and comment are only stored when "Save rating" is pressed.
+  function markDirty(tr) {
+    var btn = tr.querySelector('[data-save]'), msg = tr.querySelector('.saved'), has = Number(tr.dataset.val) > 0;
+    btn.classList.remove('done'); btn.classList.toggle('primary', has); btn.disabled = !has; btn.textContent = 'Save rating';
+    msg.classList.remove('err'); msg.classList.add('todo');
+    msg.textContent = has ? 'Not saved yet' : 'Pick the stars first';
+  }
+  main.addEventListener('input', function (e) {
+    if (e.target.classList.contains('comment')) markDirty(e.target.closest('.track'));
+  });
+  window.addEventListener('beforeunload', function (e) {
+    if (main.querySelector('.btn.save.primary')) { e.preventDefault(); e.returnValue = ''; }
+  });
+
   main.addEventListener('change', function (e) {
-    if (e.target.classList.contains('comment')) {
-      var tr = e.target.closest('.track'), mine = ratingOf(tr.dataset.id, Number(tr.dataset.n), WHO);
-      if (mine) save(tr, tr.dataset.id, Number(tr.dataset.n), mine.stars, e.target.value);
-      else tr.querySelector('.saved').textContent = 'Pick stars to save';
-    }
     if (e.target.classList.contains('internal')) {
-      var id = e.target.closest('.card').dataset.id, text = e.target.value;
+      var card = e.target.closest('.card'), id = card.dataset.id, text = e.target.value, nm = card.querySelector('.notes-msg');
+      nm.textContent = 'Saving notes…';
       run('saveNotes', KEY, id, text).then(function () {
         state.demos.forEach(function (d) { if (d.id === id) d.notes = text; });
-      }).catch(fail);
+        nm.textContent = 'Notes saved ✓';
+      }).catch(function (err) { nm.textContent = 'Notes not saved. Try again.'; nm.classList.add('err'); });
     }
   });
 
   function save(tr, id, n, val, comment) {
-    var msg = tr.querySelector('.saved'); msg.textContent = 'Saving…'; msg.classList.remove('err');
-    tr.querySelectorAll('[data-star]').forEach(function (b) { b.classList.toggle('on', Number(b.dataset.star) <= val); });
+    var msg = tr.querySelector('.saved'), btn = tr.querySelector('[data-save]');
+    msg.textContent = 'Saving…'; msg.classList.remove('err', 'todo'); btn.disabled = true;
     run('rateTrack', KEY, WHO, id, n, val, comment).then(function () {
       var r = ratingOf(id, n, WHO);
       if (r) { r.stars = val; r.comment = comment; } else state.ratings.push({ id: id, track: n, who: WHO, stars: val, comment: comment });
@@ -350,11 +375,11 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
       if (d && d.status === 'New') d.status = 'Listening';
       tr.outerHTML = trackHtml(d, d.tracks[n - 1]);
       var fresh = main.querySelector('.track[data-id="' + id + '"][data-n="' + n + '"] .saved');
-      if (fresh) fresh.textContent = 'Saved';
+      if (fresh) fresh.textContent = '';
       var pill = main.querySelector('.card[data-id="' + id + '"] .pill');
       if (pill) { var ph = phase(d); pill.className = 'pill p-' + ph; pill.textContent = statusName(ph); }
       document.getElementById('cTodo').textContent = state.demos.filter(isTodo).length;
-    }).catch(function (err) { msg.textContent = 'Could not save'; msg.classList.add('err'); console.error(err); });
+    }).catch(function (err) { msg.textContent = 'Could not save. Try again.'; msg.classList.add('err'); btn.disabled = false; console.error(err); });
   }
 
   function fail(err) { alertBox('Something went wrong: ' + (err && err.message || err)); }
