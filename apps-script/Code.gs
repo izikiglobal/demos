@@ -35,7 +35,7 @@ var HEADERS = [
   'Beatport', 'SoundCloud', 'Spotify', 'Instagram', 'Website',
   'Tracks', 'Listen link', 'Download link', 'Style',
   'BPM', 'Release type', 'Previous releases', 'Note', 'Found us via',
-  'Rights confirmed', 'No AI confirmed', 'Consent', 'Internal notes', 'ID'
+  'Rights confirmed', 'No AI confirmed', 'Consent', 'Internal notes', 'ID', 'Bio'
 ];
 var RATING_HEADERS = ['Rated at', 'Demo ID', 'Track #', 'Track', 'Artist', 'Listener', 'IZIKI fit', 'Comment'];
 var PICK_HEADERS = ['Month', 'Demo ID', 'Artist', 'Track', 'IZIKI fit (avg)', 'Ratings', 'Listen link', 'Email'];
@@ -90,7 +90,7 @@ function doPost(e) {
       s_(d.beatport), s_(d.soundcloud), s_(d.spotify), s_(d.instagram), s_(d.site),
       s_(d.tracks), s_(d.link), s_(d.download), s_(d.style),
       s_(d.bpm), s_(d.type), s_(d.previous), s_(d.note), s_(d.heard),
-      d.owned ? 'Yes' : 'No', d.noAI ? 'Yes' : 'No', d.consent ? 'Yes' : 'No', '', id
+      d.owned ? 'Yes' : 'No', d.noAI ? 'Yes' : 'No', d.consent ? 'Yes' : 'No', '', id, s_(d.bio)
     ]);
 
     notifyLabel_(d, id);
@@ -123,7 +123,7 @@ function roomData(key) {
   var demos = rows_(sheet_()).map(function (r) {
     return {
       id: r['ID'], received: iso_(r['Received']), status: r['Status'] || 'New',
-      artist: r['Artist'], location: r['Location'], email: r['Email'],
+      artist: r['Artist'], realName: r['Real name'], bio: r['Bio'] || '', location: r['Location'], email: r['Email'],
       beatport: r['Beatport'], soundcloud: r['SoundCloud'], spotify: r['Spotify'],
       instagram: r['Instagram'], website: r['Website'],
       tracks: tracks_(r), download: r['Download link'], type: r['Release type'],
@@ -293,6 +293,9 @@ function sheet_() {
   var sh = ss.getSheetByName(CONFIG.SHEET_NAME);
   if (!sh) { sh = ss.insertSheet(CONFIG.SHEET_NAME); }
   if (sh.getLastRow() === 0) setupSheet();
+  else if (sh.getLastColumn() < HEADERS.length) { // new columns added later (e.g. Bio)
+    sh.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]).setFontWeight('bold');
+  }
   return sh;
 }
 
@@ -391,7 +394,7 @@ function notifyLabel_(d, id) {
   if (!CONFIG.NOTIFY_EMAIL || CONFIG.NOTIFY_EMAIL.indexOf('example.com') > -1) return;
   var url = ss_().getUrl();
   var rows = [
-    ['Artist', d.artist], ['Email', d.email], ['From', d.location], ['Beatport', d.beatport],
+    ['Artist', d.artist], ['Bio', d.bio], ['Email', d.email], ['From', d.location], ['Beatport', d.beatport],
     ['SoundCloud', d.soundcloud], ['Spotify', d.spotify], ['Instagram', d.instagram],
     ['Website', d.site],
     ['Tracks', d.tracks], ['Style', d.style], ['BPM', d.bpm], ['Type', d.type],
