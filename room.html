@@ -95,6 +95,10 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
 .rank .a{color:var(--muted);font-size:.9rem}
 .rank .sc{font-family:var(--display);font-weight:800;color:var(--marigold);text-align:right;white-space:nowrap}
 .rank .sc small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+.rank.top{border:2px solid var(--marigold)}
+.rank.top .n{color:var(--marigold)}
+.sec{font-family:var(--display);font-weight:800;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px}
+.sec.first{margin-top:0;color:var(--marigold)}
 .crown{font-family:var(--display);font-weight:800;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--marigold)}
 
 .empty,.loading{color:var(--muted);font-family:var(--display);padding:40px 0;text-align:center}
@@ -115,7 +119,7 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
   <nav id="tabs" hidden>
     <button data-tab="todo" aria-pressed="true">To rate <span class="count" id="cTodo"></span></button>
     <button data-tab="all" aria-pressed="false">All demos <span class="count" id="cAll"></span></button>
-    <button data-tab="month" aria-pressed="false">Demo of the month</button>
+    <button data-tab="month" aria-pressed="false">Top 3 of the month</button>
   </nav>
   <main id="main"><p class="loading">Loading demos…</p></main>
 </div>
@@ -291,19 +295,25 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
     main.innerHTML =
       '<div class="month-nav"><button class="btn" data-m="-1" aria-label="Previous month">←</button><h2>' + esc(label) + '</h2>' +
       '<button class="btn" data-m="1" aria-label="Next month"' + (isCurrent ? ' disabled' : '') + '>→</button></div>' +
-      '<p class="meta" style="margin:-6px 0 18px">' + (isCurrent ? 'Live ranking. The winner is picked automatically on the 1st and emailed to the team.' :
-        'Final ranking for ' + esc(label) + '. Decide on the tracks you both rated.') + ' Tracks rated by both of you rank first.' +
-      (isCurrent ? ' Decisions (shortlist, contact the artist, sign, pass) open here when the month closes.' : '') + '</p>' +
-      (rows.length ? rows.map(function (r, i) {
-        return '<div class="rank' + (i === 0 ? ' first' : '') + '"><div class="n">' + (i + 1) + '</div><div>' +
-          (i === 0 ? '<div class="crown">' + (isCurrent ? 'Leading' : 'Demo of the month') + '</div>' : '') +
-          '<div class="t">' + esc(r.t.title) + '</div><div class="a">' + esc(r.d.artist) + ' · ' + esc(r.t.style) +
-          ' · <a href="' + esc(r.t.url) + '" target="_blank" rel="noopener">Listen</a></div></div>' +
-          '<div class="sc">' + stars(r.avg) + ' ' + r.avg.toFixed(1) + '<small>' + r.count + ' of ' + TEAM.length + ' rated</small></div>' +
-          (!isCurrent && r.full ? '<div class="acts" data-id="' + esc(r.d.id) + '"><span class="label">Decision</span>' + DECISIONS.map(function (s) {
-            return '<button type="button" class="btn' + (r.d.status === s ? ' cur' : '') + '" data-status="' + esc(s) + '">' + esc(statusName(s)) + '</button>';
-          }).join('') + '</div>' : '') + '</div>';
-      }).join('') : '<p class="empty">No rated tracks for this month yet.</p>');
+      '<p class="meta" style="margin:-6px 0 18px">' + (isCurrent ?
+        'Live ranking. On the 1st the top 3 are picked automatically and emailed to the team. Decisions (shortlist, contact the artist, sign, pass) open here when the month closes.' :
+        'Final ranking for ' + esc(label) + '. Decide on the top 3.') + ' Tracks rated by both of you rank first.</p>' +
+      (rows.length ? '<div class="sec first">' + (isCurrent ? 'Top 3 so far' : 'Top 3 of ' + esc(label)) + '</div>' +
+        rows.slice(0, 3).map(function (r, i) { return rankHtml(r, i, true); }).join('') +
+        (rows.length > 3 ? '<div class="sec">Rest of the ranking</div>' + rows.slice(3).map(function (r, i) { return rankHtml(r, i + 3, false); }).join('') : '')
+        : '<p class="empty">No rated tracks for this month yet.</p>');
+
+    function rankHtml(r, i, top) {
+      var medal = ['1st', '2nd', '3rd'][i];
+      return '<div class="rank' + (top ? ' top' : '') + '"><div class="n">' + (i + 1) + '</div><div>' +
+        (top ? '<div class="crown">' + (isCurrent ? medal + ' so far' : medal + ' of the month') + '</div>' : '') +
+        '<div class="t">' + esc(r.t.title) + '</div><div class="a">' + esc(r.d.artist) + ' · ' + esc(r.t.style) +
+        ' · <a href="' + esc(r.t.url) + '" target="_blank" rel="noopener">Listen</a></div></div>' +
+        '<div class="sc">' + stars(r.avg) + ' ' + r.avg.toFixed(1) + '<small>' + r.count + ' of ' + TEAM.length + ' rated</small></div>' +
+        (top && !isCurrent && r.full ? '<div class="acts" data-id="' + esc(r.d.id) + '"><span class="label">Decision</span>' + DECISIONS.map(function (s) {
+          return '<button type="button" class="btn' + (r.d.status === s ? ' cur' : '') + '" data-status="' + esc(s) + '">' + esc(statusName(s)) + '</button>';
+        }).join('') + '</div>' : '') + '</div>';
+    }
   }
 
   // ----- events -----
