@@ -51,6 +51,15 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
 .meta{font-size:.86rem;color:var(--muted)}
 .links{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0;font-family:var(--display);font-size:.85rem}
 .note{margin:12px 0 0;color:var(--ink);font-size:.95rem;font-style:italic}
+.note b{font-style:normal;font-family:var(--display);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-right:6px}
+.about{margin:14px 0 0;padding:14px 16px 16px;background:var(--ground);border-radius:4px}
+.about .label{display:block;margin-bottom:6px}
+.bio{margin:0 0 12px;font-size:.95rem;white-space:pre-line}
+.bio.none{color:var(--muted);font-style:italic}
+.socials{display:flex;flex-wrap:wrap;gap:8px}
+.soc{display:inline-flex;align-items:center;gap:7px;font-family:var(--display);font-weight:800;font-size:.85rem;color:var(--ink);text-decoration:none;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;min-height:36px}
+.soc::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.soc:hover{border-color:var(--c)}
 .pill{font-family:var(--display);font-weight:800;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1.5px solid currentColor;color:var(--marigold);white-space:nowrap}
 
 .track{border-top:1px solid var(--line);margin-top:16px;padding-top:16px;display:grid;gap:10px}
@@ -208,17 +217,19 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
     return '';
   }
 
-  function linkList(d) {
-    var l = [['Beatport', d.beatport], ['SoundCloud', d.soundcloud], ['Spotify', d.spotify], ['Website', d.website]]
-      .filter(function (x) { return /^https?:\/\//i.test(x[1] || ''); })
-      .map(function (x) { return '<a href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + x[0] + '</a>'; });
-    if (d.instagram) {
-      var ig = String(d.instagram).replace(/^@/, '');
-      l.push('<a href="' + esc(/^https?:/.test(ig) ? ig : 'https://instagram.com/' + ig) + '" target="_blank" rel="noopener">Instagram</a>');
-    }
-    if (d.download) l.push('<a href="' + esc(d.download) + '" target="_blank" rel="noopener">Download WAV</a>');
-    if (d.email) l.push('<a href="mailto:' + esc(d.email) + '">Email artist</a>');
-    return l.join('');
+  function url(v) { return /^https?:\/\//i.test(v || '') ? v : ''; }
+  // "About the artist": bio + one-tap links to see who they are
+  function aboutHtml(d) {
+    var ig = String(d.instagram || '').trim().replace(/^@/, '');
+    if (ig && !/^https?:/i.test(ig)) ig = 'https://instagram.com/' + ig;
+    var soc = [['Spotify', url(d.spotify), '#1DB954'], ['Instagram', url(ig), '#E1306C'], ['SoundCloud', url(d.soundcloud), '#FF5500'],
+               ['Beatport', url(d.beatport), '#01FF95'], ['Website / promokit', url(d.website), 'var(--marigold)']]
+      .filter(function (x) { return x[1]; })
+      .map(function (x) { return '<a class="soc" style="--c:' + x[2] + '" href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + x[0] + '</a>'; });
+    if (d.email) soc.push('<a class="soc" style="--c:var(--muted)" href="mailto:' + esc(d.email) + '">Email artist</a>');
+    return '<div class="about"><span class="label">About the artist</span>' +
+      (d.bio ? '<p class="bio">' + esc(d.bio) + '</p>' : '<p class="bio none">No bio added.</p>') +
+      '<div class="socials">' + soc.join('') + '</div></div>';
   }
 
   function trackHtml(d, t) {
@@ -253,9 +264,10 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
     var ph = phase(d);
     return '<article class="card s-' + esc(ph) + '" data-id="' + esc(d.id) + '">' +
       '<div class="head"><h2>' + esc(d.artist) + '</h2><span class="pill p-' + esc(ph) + '">' + esc(statusName(ph)) + '</span></div>' +
-      '<div class="meta">' + esc([d.location, fmtDate(d.received), d.type, d.previous ? 'Previous: ' + d.previous : 'First release'].filter(Boolean).join(' · ')) + '</div>' +
-      '<div class="links">' + linkList(d) + '</div>' +
-      (d.note ? '<p class="note">“' + esc(d.note) + '”</p>' : '') +
+      '<div class="meta">' + esc([d.realName, d.location, fmtDate(d.received), d.type, d.previous ? 'Previous: ' + d.previous : 'First release'].filter(Boolean).join(' · ')) + '</div>' +
+      aboutHtml(d) +
+      (d.note ? '<p class="note"><b>About the music</b>“' + esc(d.note) + '”</p>' : '') +
+      (url(d.download) ? '<div class="links"><a href="' + esc(d.download) + '" target="_blank" rel="noopener">Download WAV folder ↗</a></div>' : '') +
       tracks +
       '<textarea class="internal" placeholder="Internal notes (team only, saved automatically)">' + esc(d.notes) + '</textarea>' +
       '<span class="saved notes-msg" aria-live="polite"></span>' +
