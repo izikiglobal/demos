@@ -72,6 +72,13 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center}
 .actions .btn{font-size:.82rem;padding:6px 12px;min-height:34px}
 .actions .btn.cur{border-color:var(--marigold);color:var(--marigold)}
+.tstat{font-family:var(--display);font-weight:800;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;padding:2px 9px;border-radius:999px;border:1.5px solid currentColor;color:var(--muted);vertical-align:middle;margin-left:10px;white-space:nowrap}
+.tstat.part{color:var(--peri)} .tstat.done{color:var(--leaf)}
+.pill.p-New{color:var(--muted)} .pill.p-Listening{color:var(--peri)} .pill.p-Rated{color:var(--leaf)}
+.pill.p-Shortlist,.pill.p-Offer\ sent{color:var(--coral)} .pill.p-Signed{color:var(--leaf)} .pill.p-Pass{color:var(--dim)}
+.rank .acts{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px}
+.rank .acts .btn{font-size:.8rem;padding:5px 11px;min-height:32px}
+.rank .acts .btn.cur{border-color:var(--marigold);color:var(--marigold)}
 .internal{width:100%;margin-top:10px;font:inherit;font-size:.88rem;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:3px;padding:8px 10px;min-height:60px;resize:vertical}
 
 .month-nav{display:flex;align-items:center;gap:14px;margin-bottom:18px}
@@ -117,7 +124,7 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
   var KEY = params.get('key') || '', WHO = params.get('who') || '', BASE = location.pathname;
   var TEAM = ['Danielle', 'Mikkas'];
   if (TEAM.indexOf(WHO) < 0) WHO = '';
-  var STATUSES = ['Listening', 'Shortlist', 'Offer sent', 'Signed', 'Pass'];
+  var DECISIONS = ['Shortlist', 'Offer sent', 'Signed', 'Pass'];
   var state = { demos: [], ratings: [], tab: 'todo', month: null };
   var main = document.getElementById('main');
 
@@ -156,6 +163,19 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
     state.ratings.forEach(function (r) { if (r.id === id && r.track === n) { s += r.stars; c++; } });
     return c ? { avg: s / c, count: c } : null;
   }
+  function trackState(id, n) {
+    var by = TEAM.filter(function (p) { return ratingOf(id, n, p); });
+    return by.length === 0 ? 'none' : by.length >= TEAM.length ? 'done' : 'part';
+  }
+  // Shown at the top of each demo: a decision once one is made, otherwise where the listening stands.
+  function phase(d) {
+    if (DECISIONS.indexOf(d.status) > -1) return d.status;
+    var st = d.tracks.map(function (t) { return trackState(d.id, t.n); });
+    if (st.every(function (x) { return x === 'done'; })) return 'Rated';
+    if (st.every(function (x) { return x === 'none'; })) return 'New';
+    return 'Listening';
+  }
+  function statusName(st) { return st === 'Offer sent' ? 'Contacted artist' : st; }
   function stars(n) { var r = Math.floor(n + 0.001); return '★★★★★'.slice(0, r) + '☆☆☆☆☆'.slice(0, 5 - r); }
   function fmtDate(iso) {
     var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -205,9 +225,11 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
     for (var i = 1; i <= 5; i++) {
       btns += '<button type="button" data-star="' + i + '" class="' + (i <= s ? 'on' : '') + '" aria-label="' + i + ' star' + (i > 1 ? 's' : '') + '">★</button>';
     }
-    var p = player(t.url);
+    var p = player(t.url), ts = trackState(d.id, t.n), avg = trackAvg(d.id, t.n);
+    var waiting = TEAM.filter(function (x) { return !ratingOf(d.id, t.n, x); });
+    var tlabel = ts === 'none' ? 'Not rated yet' : ts === 'done' ? 'Rated by both · ' + avg.avg.toFixed(1) + ' ★' : 'Waiting for ' + waiting.join(' & ');
     return '<div class="track" data-id="' + esc(d.id) + '" data-n="' + t.n + '">' +
-      '<h3>' + esc(t.title) + '<small>' + esc([t.style, t.bpm ? t.bpm + ' BPM' : ''].filter(Boolean).join(' · ')) + '</small></h3>' +
+      '<h3>' + esc(t.title) + '<span class="tstat ' + ts + '">' + esc(tlabel) + '</span><small>' + esc([t.style, t.bpm ? t.bpm + ' BPM' : ''].filter(Boolean).join(' · ')) + '</small></h3>' +
       (p ? '<div class="player">' + p + '</div>' : '') +
       '<div><a class="btn" href="' + esc(t.url) + '" target="_blank" rel="noopener">Open link ↗</a></div>' +
       '<div class="rate"><span class="label">IZIKI fit</span><span class="stars" role="group" aria-label="IZIKI fit">' + btns + '</span>' +
@@ -218,16 +240,13 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
 
   function cardHtml(d) {
     var tracks = d.tracks.map(function (t) { return trackHtml(d, t); }).join('');
-    var acts = STATUSES.map(function (s) {
-      return '<button type="button" class="btn' + (d.status === s ? ' cur' : '') + '" data-status="' + esc(s) + '">' + esc(s) + '</button>';
-    }).join('');
-    return '<article class="card s-' + esc(d.status) + '" data-id="' + esc(d.id) + '">' +
-      '<div class="head"><h2>' + esc(d.artist) + '</h2><span class="pill">' + esc(d.status) + '</span></div>' +
+    var ph = phase(d);
+    return '<article class="card s-' + esc(ph) + '" data-id="' + esc(d.id) + '">' +
+      '<div class="head"><h2>' + esc(d.artist) + '</h2><span class="pill p-' + esc(ph) + '">' + esc(statusName(ph)) + '</span></div>' +
       '<div class="meta">' + esc([d.location, fmtDate(d.received), d.type, d.previous ? 'Previous: ' + d.previous : 'First release'].filter(Boolean).join(' · ')) + '</div>' +
       '<div class="links">' + linkList(d) + '</div>' +
       (d.note ? '<p class="note">“' + esc(d.note) + '”</p>' : '') +
       tracks +
-      '<div class="actions"><span class="label">Decision</span>' + acts + '</div>' +
       '<textarea class="internal" placeholder="Internal notes (team only)">' + esc(d.notes) + '</textarea>' +
       '</article>';
   }
@@ -266,13 +285,17 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
       '<div class="month-nav"><button class="btn" data-m="-1" aria-label="Previous month">←</button><h2>' + esc(label) + '</h2>' +
       '<button class="btn" data-m="1" aria-label="Next month"' + (isCurrent ? ' disabled' : '') + '>→</button></div>' +
       '<p class="meta" style="margin:-6px 0 18px">' + (isCurrent ? 'Live ranking. The winner is picked automatically on the 1st and emailed to the team.' :
-        'Final ranking for ' + esc(label) + '.') + ' Tracks rated by both of you rank first.</p>' +
+        'Final ranking for ' + esc(label) + '. Decide on the tracks you both rated.') + ' Tracks rated by both of you rank first.' +
+      (isCurrent ? ' Decisions (shortlist, contact the artist, sign, pass) open here when the month closes.' : '') + '</p>' +
       (rows.length ? rows.map(function (r, i) {
         return '<div class="rank' + (i === 0 ? ' first' : '') + '"><div class="n">' + (i + 1) + '</div><div>' +
           (i === 0 ? '<div class="crown">' + (isCurrent ? 'Leading' : 'Demo of the month') + '</div>' : '') +
           '<div class="t">' + esc(r.t.title) + '</div><div class="a">' + esc(r.d.artist) + ' · ' + esc(r.t.style) +
           ' · <a href="' + esc(r.t.url) + '" target="_blank" rel="noopener">Listen</a></div></div>' +
-          '<div class="sc">' + stars(r.avg) + ' ' + r.avg.toFixed(1) + '<small>' + r.count + ' of ' + TEAM.length + ' rated</small></div></div>';
+          '<div class="sc">' + stars(r.avg) + ' ' + r.avg.toFixed(1) + '<small>' + r.count + ' of ' + TEAM.length + ' rated</small></div>' +
+          (!isCurrent && r.full ? '<div class="acts" data-id="' + esc(r.d.id) + '"><span class="label">Decision</span>' + DECISIONS.map(function (s) {
+            return '<button type="button" class="btn' + (r.d.status === s ? ' cur' : '') + '" data-status="' + esc(s) + '">' + esc(statusName(s)) + '</button>';
+          }).join('') + '</div>' : '') + '</div>';
       }).join('') : '<p class="empty">No rated tracks for this month yet.</p>');
   }
 
@@ -295,12 +318,10 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
     }
     var st = e.target.closest('button[data-status]');
     if (st) {
-      var card = st.closest('.card'), did = card.dataset.id, status = st.dataset.status;
+      var did = st.closest('[data-id]').dataset.id, status = st.dataset.status;
       run('setStatus', KEY, did, status).then(function () {
         state.demos.forEach(function (d) { if (d.id === did) d.status = status; });
-        card.className = 'card s-' + status;
-        card.querySelector('.pill').textContent = status;
-        card.querySelectorAll('[data-status]').forEach(function (b) { b.classList.toggle('cur', b.dataset.status === status); });
+        renderMonth();
       }).catch(fail);
     }
   });
@@ -330,6 +351,8 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
       tr.outerHTML = trackHtml(d, d.tracks[n - 1]);
       var fresh = main.querySelector('.track[data-id="' + id + '"][data-n="' + n + '"] .saved');
       if (fresh) fresh.textContent = 'Saved';
+      var pill = main.querySelector('.card[data-id="' + id + '"] .pill');
+      if (pill) { var ph = phase(d); pill.className = 'pill p-' + ph; pill.textContent = statusName(ph); }
       document.getElementById('cTodo').textContent = state.demos.filter(isTodo).length;
     }).catch(function (err) { msg.textContent = 'Could not save'; msg.classList.add('err'); console.error(err); });
   }
