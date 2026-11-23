@@ -67,6 +67,8 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
 .track h3 small{font-weight:400;color:var(--muted);font-size:.85rem;margin-left:8px}
 .player iframe{width:100%;border:0;border-radius:3px;display:block}
 .player audio{width:100%}
+.sc-msg{font-size:.88rem;color:var(--muted);background:var(--ground);border-radius:3px;padding:12px 14px}
+.sc-msg a{color:var(--marigold);font-family:var(--display);font-weight:800;text-decoration:none;margin-left:6px}
 .rate{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
 .stars{display:inline-flex;gap:2px}
 .stars button{background:none;border:0;padding:2px 3px;font-size:1.7rem;line-height:1;color:var(--line);cursor:pointer}
@@ -202,9 +204,9 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
   function player(url) {
     if (!url) return '';
     var u = url.trim(), m;
-    if (/soundcloud\.com\//i.test(u)) {
-      return '<iframe height="120" allow="autoplay" loading="lazy" src="https://w.soundcloud.com/player/?url=' +
-        encodeURIComponent(u) + '&color=%23eda644&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false"></iframe>';
+    if (/soundcloud\.(com|app\.goo\.gl)\//i.test(u)) {
+      // Private tracks need SoundCloud's own embed code, fetched after the page is drawn (see hydrateSoundCloud)
+      return '<div class="sc-slot" data-sc="' + esc(u) + '"><div class="sc-msg">Loading player…</div></div>';
     }
     if ((m = u.match(/drive\.google\.com\/file\/d\/([^/?#]+)/i))) {
       return '<iframe height="80" loading="lazy" src="https://drive.google.com/file/d/' + encodeURIComponent(m[1]) + '/preview"></iframe>';
@@ -216,6 +218,41 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
     if (/\.(mp3|wav|m4a|ogg)(\?|$)/i.test(u)) return '<audio controls preload="none" src="' + esc(u) + '"></audio>';
     return '';
   }
+
+  // ----- SoundCloud: ask SoundCloud for the embed code of each (private) track -----
+  var scCache = {};
+  function scEmbed(link) {
+    var clean = link.split('?')[0].split('#')[0].replace(/^https?:\/\/(m\.|www\.)?soundcloud\.com/i, 'https://soundcloud.com');
+    if (!scCache[clean]) {
+      scCache[clean] = /on\.soundcloud\.com|soundcloud\.app\.goo\.gl/i.test(clean)
+        ? Promise.reject(new Error('short'))
+        : fetch('https://soundcloud.com/oembed?format=json&maxheight=120&url=' + encodeURIComponent(clean))
+            .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+            .then(function (j) {
+              var m = String(j.html || '').match(/src="([^"]+)"/);
+              if (!m) throw new Error('no player');
+              return m[1].replace(/&amp;/g, '&').replace(/([?&])color=[^&]*/, '$1color=%23eda644')
+                .replace(/([?&])(visual|hide_related|show_comments|show_reposts)=[^&]*/g, '$1x_=') +
+                '&hide_related=true&show_comments=false&show_reposts=false&visual=false';
+            });
+    }
+    return scCache[clean];
+  }
+  function hydrateSoundCloud(root) {
+    root.querySelectorAll('.sc-slot:not([data-done])').forEach(function (slot) {
+      slot.setAttribute('data-done', '1');
+      var link = slot.getAttribute('data-sc');
+      scEmbed(link).then(function (src) {
+        slot.innerHTML = '<iframe height="120" allow="autoplay; encrypted-media" loading="lazy" src="' + esc(src) + '"></iframe>';
+      }).catch(function (e) {
+        var why = e && e.message === 'short' ? 'This is a short SoundCloud link, it opens on SoundCloud.'
+          : e && e.message === '403' ? 'The artist has switched off embedding for this track, so it only plays on SoundCloud.'
+          : 'SoundCloud could not load a player for this link.';
+        slot.innerHTML = '<div class="sc-msg">' + why + '<a href="' + esc(link) + '" target="_blank" rel="noopener">Listen on SoundCloud ↗</a></div>';
+      });
+    });
+  }
+  new MutationObserver(function () { hydrateSoundCloud(main); }).observe(main, { childList: true, subtree: true });
 
   function url(v) { return /^https?:\/\//i.test(v || '') ? v : ''; }
   // "About the artist": bio + one-tap links to see who they are
