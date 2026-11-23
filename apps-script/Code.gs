@@ -595,8 +595,8 @@ function kitCatalogue_(k) {
   var c = { title: col('title'), cat: col('cat. no'), artist: col('artist - original'), track: col('track'), remix: col('artist - remix'), date: col('release date') };
   var list = v.slice(1).map(function (r) {
     var g = function (i) { return i < 0 ? '' : String(r[i] || '').trim(); };
-    var y = (g(c.date).match(/(19|20)\d{2}/) || [''])[0];
-    return { cat: g(c.cat).replace(/O(?=\d+$)/i, '0'), release: g(c.title), track: g(c.track), artist: g(c.artist), remix: g(c.remix), year: y };
+    var y = (g(c.date).match(/(?:^|\D)((?:19|20)\d{2})(?!\d)/) || ['', ''])[1];
+    return { cat: g(c.cat).replace(/O(?=\d+$)/i, '0'), release: g(c.title).replace(/\s+/g, ' '), track: g(c.track), artist: g(c.artist), remix: g(c.remix), year: y };
   }).filter(function (x) { return x.track; });
   return { ok: true, result: list };
 }
