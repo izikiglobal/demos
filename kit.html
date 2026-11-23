@@ -74,6 +74,17 @@ input:user-invalid,textarea:user-invalid{border-color:var(--rose)}
 .opt .tag{display:inline-block;font-family:var(--head);font-weight:900;font-stretch:118%;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;background:var(--night);color:#fff;border-radius:999px;padding:2px 10px;margin-right:8px;vertical-align:1px}
 .or{display:flex;align-items:center;gap:12px;color:var(--grey);font-family:var(--head);font-weight:900;font-stretch:118%;text-transform:uppercase;font-size:.85rem}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.cat{max-height:340px;overflow:auto;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.cat-msg{margin:0;padding:14px;color:var(--soft);font-size:.9rem}
+.cat-row{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid #f1e7e1;cursor:pointer;font-size:.92rem}
+.cat-row:last-child{border-bottom:0}
+.cat-row[hidden]{display:none}
+.cat-row:hover{background:#fff8e6}
+.cat-row input{width:18px;height:18px;margin:0;accent-color:var(--night)}
+.cat-row .t b{font-weight:700}
+.cat-row .t small{display:block;color:var(--soft);font-size:.8rem}
+.cat-row .y{font-family:var(--head);font-weight:800;font-stretch:112%;font-size:.75rem;color:var(--grey);text-align:right;white-space:nowrap}
+.cat-row.on{background:#fff4d6}
 .check{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;font-size:.95rem;cursor:pointer}
 .check input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--night)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
@@ -175,7 +186,13 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
 
     <fieldset>
       <legend><span class="num">4</span> Your releases on IZIKI</legend>
-      <div class="field full"><label for="releases">Your tracks on IZIKI: track name and year</label><textarea id="releases" name="releases" maxlength="2000" placeholder="One track per line, e.g.&#10;Oxum Rising · 2025&#10;Legba (with Ama) · 2026"></textarea><p class="hint">Write the track name and the year it came out (or comes out) on IZIKI, one per line. This helps us find your music for radio shows, release promo and our website.</p></div>
+      <div class="field full" id="catBox">
+        <label for="catSearch">Tick your tracks from the IZIKI catalogue</label>
+        <input id="catSearch" type="search" placeholder="Search track, artist or IZIKI number" autocomplete="off">
+        <div class="cat" id="catList" role="group" aria-label="IZIKI releases"><p class="cat-msg">Loading the IZIKI catalogue…</p></div>
+        <p class="hint"><b id="catCount">0</b> selected. This helps us find your music for radio shows, release promo and our website.</p>
+      </div>
+      <div class="field full"><label for="releases">Coming soon on IZIKI, or not in the list? Track name and year</label><textarea id="releases" name="releases" maxlength="1000" placeholder="One track per line, e.g.&#10;Legba (with Ama) · 2026" style="min-height:90px"></textarea></div>
     </fieldset>
 
     <fieldset>
@@ -219,6 +236,35 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
   var bio = document.getElementById('bio'), bioCount = document.getElementById('bioCount');
   bio.addEventListener('input', function () { bioCount.textContent = bio.value.length + ' / 3000'; });
 
+  // ----- IZIKI catalogue checklist (read live from the catalogue sheet) -----
+  var catList = document.getElementById('catList'), catSearch = document.getElementById('catSearch'), catCount = document.getElementById('catCount');
+  function escH(v) { return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ catalogue: true, k: K }) })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      if (!j.ok) throw new Error(j.error);
+      var list = j.result.slice().reverse(); // newest first
+      catList.innerHTML = list.map(function (x) {
+        var name = x.track + (x.remix ? ' (' + x.remix + ' Remix)' : '');
+        var line = [name, x.artist, x.year, x.cat].filter(Boolean).join(' · ');
+        return '<label class="cat-row" data-s="' + escH((name + ' ' + x.artist + ' ' + x.cat + ' ' + x.release).toLowerCase()) + '">' +
+          '<input type="checkbox" name="rel" value="' + escH(line) + '">' +
+          '<span class="t"><b>' + escH(name) + '</b><small>' + escH(x.artist) + (x.release && x.release !== x.track ? ' · from ' + escH(x.release) : '') + '</small></span>' +
+          '<span class="y">' + escH([x.cat, x.year].filter(Boolean).join(' · ')) + '</span></label>';
+      }).join('') || '<p class="cat-msg">The catalogue is empty.</p>';
+    })
+    .catch(function () { catList.innerHTML = '<p class="cat-msg">Could not load the catalogue. Write your tracks in the box below instead.</p>'; });
+  catSearch.addEventListener('input', function () {
+    var q = catSearch.value.trim().toLowerCase();
+    catList.querySelectorAll('.cat-row').forEach(function (row) { row.hidden = q && row.dataset.s.indexOf(q) < 0; });
+  });
+  catSearch.addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
+  catList.addEventListener('change', function (e) {
+    if (e.target.name !== 'rel') return;
+    e.target.closest('.cat-row').classList.toggle('on', e.target.checked);
+    catCount.textContent = catList.querySelectorAll('input[name=rel]:checked').length;
+  });
+
   // Add https:// when someone pastes "drive.google.com/…" without it
   form.querySelectorAll('input[type=url]').forEach(function (el) {
     el.addEventListener('blur', function () {
@@ -243,8 +289,10 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
       return;
     }
     var data = { kit: true, k: K };
-    new FormData(form).forEach(function (v, k) { data[k] = String(v).trim(); });
+    new FormData(form).forEach(function (v, k) { if (k !== 'rel') data[k] = String(v).trim(); });
     data.consent = !!data.consent;
+    var picked = [].map.call(form.querySelectorAll('input[name=rel]:checked'), function (x) { return x.value; });
+    data.releases = picked.concat(data.releases ? data.releases.split(/\n+/) : []).map(function (l) { return l.trim(); }).filter(Boolean).join('\n');
 
     btn.disabled = true; say('Sending…');
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) })
