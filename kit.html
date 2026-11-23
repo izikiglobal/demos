@@ -22,7 +22,7 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.6}
+body{position:relative;overflow-x:hidden;margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.6}
 a{color:var(--ink)}
 .wrap{max-width:820px;margin:0 auto;padding:0 max(18px,env(safe-area-inset-right)) 0 max(18px,env(safe-area-inset-left))}
 
@@ -33,8 +33,21 @@ a{color:var(--ink)}
 .bar{display:block;height:5px;border-radius:3px;background:var(--c,var(--grey))}
 .wave{display:block;width:120px;height:14px}
 
+/* ---------- artwork (from the IZIKI presentation) ---------- */
+.art{position:absolute;left:50%;top:0;transform:translateX(-50%);width:min(1240px,100%);height:clamp(260px,40vw,440px);z-index:0;pointer-events:none;
+  background:url(img/art-hero.webp) center 18%/cover no-repeat;
+  -webkit-mask-image:radial-gradient(ellipse 62% 100% at 50% 0,#000 45%,rgba(0,0,0,.55) 68%,transparent 92%);
+          mask-image:radial-gradient(ellipse 62% 100% at 50% 0,#000 45%,rgba(0,0,0,.55) 68%,transparent 92%)}
+.leaf{position:fixed;z-index:0;pointer-events:none;mix-blend-mode:multiply;opacity:.9;display:none}
+.leaf.tr{top:0;right:0;width:clamp(150px,15vw,230px);-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.leaf.bl{bottom:0;left:0;width:clamp(150px,15vw,240px)}
+@media (min-width:1080px){.leaf{display:block}}
+@media (max-width:640px){.art{-webkit-mask-image:radial-gradient(ellipse 95% 100% at 50% 0,#000 45%,rgba(0,0,0,.55) 68%,transparent 92%);mask-image:radial-gradient(ellipse 95% 100% at 50% 0,#000 45%,rgba(0,0,0,.55) 68%,transparent 92%)}}
+main,.wrap{position:relative;z-index:1}
+
 /* ---------- header ---------- */
 .top{display:grid;justify-items:center;gap:10px;padding-top:0}
+.top .logo{margin-top:clamp(150px,26vw,290px)}
 .top .bar{width:200px;border-radius:0 0 3px 3px}
 .top .tri i{border-left-width:13px;border-right-width:13px;border-top-width:20px;opacity:.8}
 .logo{position:relative;width:min(340px,80vw);aspect-ratio:400/245;margin:34px 0 6px}
@@ -121,11 +134,11 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
 </style>
 </head>
 <body>
+<div class="art" aria-hidden="true"></div>
+<img class="leaf tr" src="img/leaf-tr.webp" alt="" aria-hidden="true"><img class="leaf bl" src="img/leaf-bl.webp" alt="" aria-hidden="true">
 <div class="wrap" id="page">
 
   <header class="top">
-    <span class="bar" style="--c:#c9c6c4"></span>
-    <span class="tri" style="--c:#c9c6c4"><i></i><i></i><i></i><i></i><i></i></span>
     <div class="logo">
       <svg viewBox="0 0 400 245" aria-hidden="true">
         <g fill="#f2c35b">
