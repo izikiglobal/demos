@@ -165,7 +165,7 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
   <p class="intro">Share the links to your photos, videos and bio, so we can promote your IZIKI releases and radio shows. Your files stay on your own Google Drive or Dropbox. We only keep the links and one small profile photo.</p>
 
   <ul class="steps">
-    <li><span class="tri" style="--c:#f2c35b"><i></i><i></i><i></i></span><b>One folder</b><p>Easiest: one Google Drive folder with your photos, videos, bio and logo.</p></li>
+    <li><span class="tri" style="--c:#f2c35b"><i></i><i></i><i></i></span><b>One folder</b><p>Easiest: a link to one Google Drive folder with your photos, videos, bio and logo.</p></li>
     <li><span class="tri" style="--c:#9cc3e8"><i></i><i></i><i></i></span><b>Open links</b><p>Set it to "Anyone with the link can view" so we can open it straight away.</p></li>
     <li><span class="tri" style="--c:#d672b0"><i></i><i></i><i></i></span><b>Keep it fresh</b><p>New photos or bio? Send again with the same email. It replaces your old kit.</p></li>
   </ul>
@@ -190,14 +190,14 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
         <div class="pp"><img id="ppPrev" alt="" hidden><span class="pp-empty" id="ppEmpty">IZK</span>
           <div><label class="pp-btn" for="photoFile">Choose a photo</label><input id="photoFile" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/*">
           <p class="hint" id="ppHint">Square photo, up to 30 KB.</p></div></div></div>
-      <div class="opt full"><span class="tag">Option A</span><b>One press kit folder</b> with your photos, videos and bio inside.</div>
-      <div class="field full"><label for="folder">Press kit folder</label><input id="folder" name="folder" type="url" maxlength="500" placeholder="Google Drive folder with photos, videos and bio"></div>
+      <div class="opt full"><span class="tag">Option A</span><b>Link to one press kit folder</b> with your photos, videos and bio inside.</div>
+      <div class="field full"><label for="folder">Press kit folder</label><input id="folder" name="folder" type="url" maxlength="500" placeholder="Link to Google Drive folder with photos, videos and bio"></div>
       <div class="or full"><span>or</span></div>
-      <div class="opt full"><span class="tag">Option B</span><b>Send them separately</b>: photos, videos and bio are all needed.</div>
-      <div class="field"><label for="photos">Photos</label><input id="photos" name="photos" type="url" maxlength="500" placeholder="Folder with high-res press photos"></div>
-      <div class="field"><label for="videos">Videos</label><input id="videos" name="videos" type="url" maxlength="500" placeholder="Folder or link to your videos"></div>
+      <div class="opt full"><span class="tag">Option B</span><b>Send links separately</b>: photos, videos and bio are all needed.</div>
+      <div class="field"><label for="photos">Photos</label><input id="photos" name="photos" type="url" maxlength="500" placeholder="Link to folder with high-res press photos"></div>
+      <div class="field"><label for="videos">Videos</label><input id="videos" name="videos" type="url" maxlength="500" placeholder="Link to folder or video"></div>
       <div class="field full"><label for="bio">Bio</label><textarea id="bio" name="bio" maxlength="3000" placeholder="Write your bio here, or link to it below"></textarea><div class="counter" id="bioCount">0 / 3000</div></div>
-      <div class="field full"><label for="bioLink">Or a link to your bio</label><input id="bioLink" name="bioLink" type="url" maxlength="500" placeholder="Google Doc or file with your bio"></div>
+      <div class="field full"><label for="bioLink">Or a link to your bio</label><input id="bioLink" name="bioLink" type="url" maxlength="500" placeholder="Link to Google Doc or file with your bio"></div>
     </fieldset>
 
     <fieldset>
@@ -341,7 +341,7 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
     }
     var f = function (n) { return form.elements[n].value.trim(); };
     if (!f('folder') && !(f('photos') && f('videos') && (f('bio') || f('bioLink')))) {
-      say('Please share your press kit folder (Option A), or your photos, videos and bio (Option B).', true);
+      say('Please share the link to your press kit folder (Option A), or links to your photos and videos plus your bio (Option B).', true);
       form.elements.folder.focus();
       return;
     }
