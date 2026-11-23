@@ -70,6 +70,10 @@ input::placeholder,textarea::placeholder{color:#a99e98}
 input:focus-visible,textarea:focus-visible{outline:none;border-color:var(--sun);box-shadow:0 0 0 4px rgba(242,195,91,.3)}
 input:user-invalid,textarea:user-invalid{border-color:var(--rose)}
 .counter{font-size:.78rem;color:var(--soft);text-align:right;font-variant-numeric:tabular-nums}
+.opt{font-size:.92rem;color:var(--ink);background:var(--paper);border-radius:10px;padding:10px 14px;margin-top:4px}
+.opt .tag{display:inline-block;font-family:var(--head);font-weight:900;font-stretch:118%;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;background:var(--night);color:#fff;border-radius:999px;padding:2px 10px;margin-right:8px;vertical-align:1px}
+.or{display:flex;align-items:center;gap:12px;color:var(--grey);font-family:var(--head);font-weight:900;font-stretch:118%;text-transform:uppercase;font-size:.85rem}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
 .check{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;font-size:.95rem;cursor:pointer}
 .check input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--night)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
@@ -150,7 +154,10 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
       <legend><span class="num">2</span> Your kit</legend>
       <p class="hint full">Google Drive, Dropbox or your own site. Set each link to "Anyone with the link can view".</p>
       <div class="field full"><label for="photo">Profile photo <span class="req">*</span></label><input id="photo" name="photo" type="url" required maxlength="500" placeholder="Link to one photo of you"><p class="hint">One square photo, up to 500 × 500 px. We use it as your picture in our artist panel.</p></div>
-      <div class="field full"><label for="folder">Press kit folder</label><input id="folder" name="folder" type="url" maxlength="500" placeholder="One Google Drive folder with everything: photos, videos, bio, logo"><p class="hint">Easiest option. If you share one folder with everything, the boxes below are optional.</p></div>
+      <div class="opt full"><span class="tag">Option A</span><b>One press kit folder</b> with your photos, videos and bio inside.</div>
+      <div class="field full"><label for="folder">Press kit folder</label><input id="folder" name="folder" type="url" maxlength="500" placeholder="Google Drive folder with photos, videos and bio"></div>
+      <div class="or full"><span>or</span></div>
+      <div class="opt full"><span class="tag">Option B</span><b>Send them separately</b>: photos, videos and bio are all needed.</div>
       <div class="field"><label for="photos">Photos</label><input id="photos" name="photos" type="url" maxlength="500" placeholder="Folder with high-res press photos"></div>
       <div class="field"><label for="videos">Videos</label><input id="videos" name="videos" type="url" maxlength="500" placeholder="Folder or link to your videos"></div>
       <div class="field full"><label for="bio">Bio</label><textarea id="bio" name="bio" maxlength="3000" placeholder="Write your bio here, or link to it below"></textarea><div class="counter" id="bioCount">0 / 3000</div></div>
@@ -168,7 +175,7 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
 
     <fieldset>
       <legend><span class="num">4</span> Your releases on IZIKI</legend>
-      <div class="field full"><label for="releases">Tracks you've released (or are releasing) on IZIKI</label><textarea id="releases" name="releases" maxlength="2000" placeholder="One per line, e.g.&#10;Oxum Rising (Original Mix) · March 2026 · https://www.beatport.com/release/…&#10;Legba (with Ama) · coming June 2026"></textarea><p class="hint">Title, date and a link if it's out. This helps us find your music for radio shows, release promo and our website.</p></div>
+      <div class="field full"><label for="releases">Your tracks on IZIKI: track name and year</label><textarea id="releases" name="releases" maxlength="2000" placeholder="One track per line, e.g.&#10;Oxum Rising · 2025&#10;Legba (with Ama) · 2026"></textarea><p class="hint">Write the track name and the year it came out (or comes out) on IZIKI, one per line. This helps us find your music for radio shows, release promo and our website.</p></div>
     </fieldset>
 
     <fieldset>
@@ -230,8 +237,8 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
       return;
     }
     var f = function (n) { return form.elements[n].value.trim(); };
-    if (!f('folder') && !(f('photos') && (f('bio') || f('bioLink')))) {
-      say('Please share your press kit folder, or your photos plus your bio.', true);
+    if (!f('folder') && !(f('photos') && f('videos') && (f('bio') || f('bioLink')))) {
+      say('Please share your press kit folder (Option A), or your photos, videos and bio (Option B).', true);
       form.elements.folder.focus();
       return;
     }
