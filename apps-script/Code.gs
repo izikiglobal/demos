@@ -66,6 +66,7 @@ function doPost(e) {
   try { d = JSON.parse((e && e.postData && e.postData.contents) || '{}'); }
   catch (x) { return json_({ ok: false, error: 'Bad request.' }); }
   if (d.action) return json_(roomApi_(d)); // Listening Room + Press Kits panel calls
+  if (d.catalogue) return json_(kitCatalogue_(d.k)); // release list for the press-kit form
   if (d.kit) return json_(submitKit_(d));   // artist press-kit form
 
   var lock = LockService.getScriptLock();
@@ -583,6 +584,22 @@ var KIT_SHEET = 'Press kits';
 var KIT_HEADERS = ['Updated', 'Artist', 'Real name', 'Email', 'City', 'Profile photo', 'Press kit folder',
   'Photos', 'Videos', 'Bio', 'Bio link', 'Instagram', 'SoundCloud', 'Spotify', 'Beatport', 'Website', 'IZIKI releases', 'First sent', 'ID'];
 var KIT_PAGES = 'https://izikiglobal.github.io/demos/';
+var CATALOGUE_ID = '13VN8Z8KU21p81P8jVKSaVVezWTdGig_pHZHMysQER48'; // "IZIKI Releases Catalogue" sheet (first tab)
+
+/** Releases from the IZIKI catalogue sheet, for the checklist on the press-kit form. */
+function kitCatalogue_(k) {
+  if (k !== kitKey_()) return { ok: false, error: 'Not allowed' };
+  var v = SpreadsheetApp.openById(CATALOGUE_ID).getSheets()[0].getDataRange().getDisplayValues();
+  var h = v[0].map(function (x) { return String(x).trim().toLowerCase(); });
+  var col = function (name) { return h.indexOf(name); };
+  var c = { title: col('title'), cat: col('cat. no'), artist: col('artist - original'), track: col('track'), remix: col('artist - remix'), date: col('release date') };
+  var list = v.slice(1).map(function (r) {
+    var g = function (i) { return i < 0 ? '' : String(r[i] || '').trim(); };
+    var y = (g(c.date).match(/(19|20)\d{2}/) || [''])[0];
+    return { cat: g(c.cat).replace(/O(?=\d+$)/i, '0'), release: g(c.title), track: g(c.track), artist: g(c.artist), remix: g(c.remix), year: y };
+  }).filter(function (x) { return x.track; });
+  return { ok: true, result: list };
+}
 
 function kitSheet_() { return tab_(KIT_SHEET, KIT_HEADERS); }
 
