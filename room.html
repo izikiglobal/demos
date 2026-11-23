@@ -128,7 +128,7 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
   <nav id="tabs" hidden>
     <button data-tab="todo" aria-pressed="true">To rate <span class="count" id="cTodo"></span></button>
     <button data-tab="all" aria-pressed="false">All demos <span class="count" id="cAll"></span></button>
-    <button data-tab="month" aria-pressed="false">Top 3 of the month</button>
+    <button data-tab="month" aria-pressed="false">Top 5 of the month</button>
   </nav>
   <main id="main"><p class="loading">Loading demos…</p></main>
 </div>
@@ -308,15 +308,15 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
       '<div class="month-nav"><button class="btn" data-m="-1" aria-label="Previous month">←</button><h2>' + esc(label) + '</h2>' +
       '<button class="btn" data-m="1" aria-label="Next month"' + (isCurrent ? ' disabled' : '') + '>→</button></div>' +
       '<p class="meta" style="margin:-6px 0 18px">' + (isCurrent ?
-        'Live ranking. On the 1st the top 3 are picked automatically and emailed to the team. Decisions (shortlist, contact the artist, sign, pass) open here when the month closes.' :
-        'Final ranking for ' + esc(label) + '. Decide on the top 3.') + ' Tracks rated by both of you rank first.</p>' +
-      (rows.length ? '<div class="sec first">' + (isCurrent ? 'Top 3 so far' : 'Top 3 of ' + esc(label)) + '</div>' +
-        rows.slice(0, 3).map(function (r, i) { return rankHtml(r, i, true); }).join('') +
-        (rows.length > 3 ? '<div class="sec">Rest of the ranking</div>' + rows.slice(3).map(function (r, i) { return rankHtml(r, i + 3, false); }).join('') : '')
+        'Live ranking. On the 1st the top 5 are picked automatically and emailed to the team. Decisions (shortlist, contact the artist, sign, pass) open here when the month closes.' :
+        'Final ranking for ' + esc(label) + '. Decide on the top 5.') + ' Tracks rated by both of you rank first.</p>' +
+      (rows.length ? '<div class="sec first">' + (isCurrent ? 'Top 5 so far' : 'Top 5 of ' + esc(label)) + '</div>' +
+        rows.slice(0, 5).map(function (r, i) { return rankHtml(r, i, true); }).join('') +
+        (rows.length > 5 ? '<div class="sec">Rest of the ranking</div>' + rows.slice(5).map(function (r, i) { return rankHtml(r, i + 5, false); }).join('') : '')
         : '<p class="empty">No rated tracks for this month yet.</p>');
 
     function rankHtml(r, i, top) {
-      var medal = ['1st', '2nd', '3rd'][i];
+      var medal = ['1st', '2nd', '3rd', '4th', '5th'][i];
       return '<div class="rank' + (top ? ' top' : '') + '"><div class="n">' + (i + 1) + '</div><div>' +
         (top ? '<div class="crown">' + (isCurrent ? medal + ' so far' : medal + ' of the month') + '</div>' : '') +
         '<div class="t">' + esc(r.t.title) + '</div><div class="a">' + esc(r.d.artist) + ' · ' + esc(r.t.style) +
