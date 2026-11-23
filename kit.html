@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IZIKI — Artist press kit</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#2b2522">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:ital,wght@0,400;0,700;0,800;1,400&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#2b2522; --ground-2:#36302b; --field:#231e1b;
+  --ink:#f3e6cc; --muted:#c9b79a;
+  --marigold:#eda644; --coral:#ea6356; --leaf:#8fc06a; --peri:#7d7cc0;
+  --line:#4a413a;
+  --head:"Anton","Arial Narrow","Helvetica Neue",sans-serif;
+  --display:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.6}
+a{color:var(--marigold)}
+.wrap{max-width:1120px;margin:0 auto;padding:48px max(18px,env(safe-area-inset-right)) 80px max(18px,env(safe-area-inset-left))}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:48px;align-items:center;margin-bottom:64px}
+.hero figure{margin:0;position:relative}
+.hero img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:3px;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.hero figcaption{position:absolute;left:12px;bottom:12px;font-family:var(--display);font-weight:800;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;background:var(--ground);color:var(--marigold);padding:5px 10px;border-radius:3px}
+.wordmark{font-family:var(--display);font-weight:800;letter-spacing:.32em;font-size:1rem;color:var(--ink);display:inline-flex;align-items:center;gap:10px}
+.wordmark::before{content:"";width:14px;height:14px;background:var(--coral);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.label{font-family:var(--display);font-weight:800;font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;color:var(--marigold)}
+h1{font-family:var(--head);font-weight:400;text-transform:uppercase;letter-spacing:.01em;font-size:clamp(2.5rem,6.4vw,4.6rem);line-height:1;margin:18px 0 20px;text-wrap:balance}
+h1 span{color:var(--coral)}
+.intro{color:var(--muted);max-width:56ch;margin:0 0 22px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-family:var(--display);font-weight:400;font-size:.78rem;letter-spacing:.06em;padding:3px 11px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap}
+
+/* ---------- guidelines ---------- */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:18px;margin:0 0 56px;padding:0;list-style:none}
+.rules li{background:var(--ground-2);border-radius:3px;padding:18px 18px 16px;border-top:3px solid var(--c,var(--marigold))}
+.rules b{display:block;font-family:var(--display);font-weight:800;font-size:1.05rem;margin-bottom:4px}
+.rules p{margin:0;color:var(--muted);font-size:.92rem}
+
+/* ---------- form ---------- */
+form{display:grid;gap:44px}
+fieldset{border:0;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 22px}
+legend{font-family:var(--head);font-weight:400;text-transform:uppercase;letter-spacing:.01em;grid-column:1/-1;display:flex;align-items:baseline;gap:14px;font-size:1.65rem;line-height:1.1;margin-bottom:22px;padding:0}
+legend .num{font-size:.8rem;letter-spacing:.1em;color:var(--muted);font-variant-numeric:tabular-nums}
+.full{grid-column:1/-1}
+.field{display:grid;gap:7px;min-width:0}
+label,.q{font-family:var(--display);font-weight:400;font-size:.92rem;letter-spacing:.02em}
+.req{color:var(--coral)}
+.hint{font-size:.84rem;color:var(--muted);margin:0}
+input[type=text],input[type=email],input[type=url],input[type=number],select,textarea{
+  width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--field);
+  border:1.5px solid var(--line);border-radius:3px;padding:12px 13px;min-height:48px;
+}
+textarea{min-height:130px;resize:vertical}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--marigold) 50%),linear-gradient(135deg,var(--marigold) 50%,transparent 50%);background-position:calc(100% - 20px) 21px,calc(100% - 14px) 21px;background-size:6px 6px;background-repeat:no-repeat;padding-right:38px}
+input::placeholder,textarea::placeholder{color:#8a7b67}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none;border-color:var(--marigold);box-shadow:0 0 0 3px rgba(237,166,68,.25)}
+input:user-invalid,select:user-invalid,textarea:user-invalid{border-color:var(--coral)}
+.counter{font-size:.8rem;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pills label{position:relative;cursor:pointer}
+.pills input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.pills span{display:inline-block;font-family:var(--display);font-weight:400;font-size:.88rem;padding:8px 15px;border-radius:999px;border:1.5px solid var(--line);color:var(--muted);transition:all .15s}
+.pills input:checked+span{border-color:var(--marigold);background:var(--marigold);color:var(--ground);font-weight:800}
+.pills input:focus-visible+span{box-shadow:0 0 0 3px rgba(237,166,68,.35)}
+
+.tracks{display:grid;gap:26px}
+.track{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 22px;min-width:0}
+.track[hidden]{display:none}
+.tracks.multi .track{border-left:3px solid var(--marigold);padding-left:20px}
+.tracks.multi .track:nth-child(2){border-color:var(--coral)}
+.tracks.multi .track:nth-child(3){border-color:var(--leaf)}
+.track-h{display:none;grid-column:1/-1;margin:0;font-family:var(--display);font-weight:800;font-size:1.1rem;letter-spacing:.04em}
+.tracks.multi .track-h{display:block}
+.check{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;font-family:var(--body);font-size:.95rem;cursor:pointer}
+.check input{width:20px;height:20px;margin:3px 0 0;accent-color:var(--marigold)}
+
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+.submit{display:flex;flex-wrap:wrap;align-items:center;gap:18px 26px}
+button{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ground);background:var(--marigold);border:0;border-radius:999px;padding:16px 34px;min-height:52px;cursor:pointer;transition:transform .15s,background .15s}
+button:hover{background:#f4b55e}
+button:active{transform:translateY(1px)}
+button[disabled]{opacity:.6;cursor:progress}
+.status{font-family:var(--display);font-size:.95rem;color:var(--muted);margin:0}
+.status.err{color:var(--coral)}
+
+.done{display:none;text-align:center;padding:40px 0 10px}
+.done h2{font-family:var(--head);font-weight:400;text-transform:uppercase;letter-spacing:.01em;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;margin:14px 0}
+.done h2 span{color:var(--leaf)}
+.done p{color:var(--muted);max-width:52ch;margin:0 auto 10px}
+.sent .done{display:block}
+.sent form,.sent .rules{display:none}
+.nokey form,.nokey .rules{display:none}
+.nokey .locked{display:block}
+.locked{display:none;background:var(--ground-2);border-left:3px solid var(--coral);padding:18px 20px;border-radius:3px;color:var(--muted)}
+fieldset .hint.full{margin-top:-12px}
+
+footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:.86rem;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;gap:28px}
+  .hero figure{max-width:440px}
+  fieldset,.track{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:no-preference){
+  .hero img{transition:transform .4s ease}
+  .hero img:hover{transform:translateY(-4px) rotate(-.4deg)}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="page">
+
+  <section class="hero">
+    <figure>
+      <img src="img/legba.jpg" width="900" height="900" alt="Painting of Papa Legba, keeper of the gate: an old man with a white beard and a pipe under a straw hat, holding two staffs topped with suns.">
+      <figcaption>Papa Legba · Keeper of the Gate</figcaption>
+    </figure>
+    <div>
+      <div class="wordmark">IZIKI</div>
+      <h1>Your press kit. <span>All in one place.</span></h1>
+      <p class="intro">Share the links to your press kit so we can promote your releases and gigs on IZIKI. Your files stay with you, on your own Google Drive, Dropbox or website. We only keep the links.</p>
+      <div class="chips">
+        <span class="chip" style="color:var(--marigold)">Photos</span>
+        <span class="chip" style="color:var(--coral)">Bios</span>
+        <span class="chip" style="color:var(--leaf)">Press kit</span>
+        <span class="chip" style="color:var(--peri)">Socials</span>
+        <span class="chip" style="color:var(--ink)">IZIKI releases</span>
+      </div>
+    </div>
+  </section>
+
+  <ul class="rules">
+    <li style="--c:var(--marigold)"><b>One folder is easiest</b><p>Put your photos, videos, bio and logo in one Google Drive folder and share that link. Or send them separately below.</p></li>
+    <li style="--c:var(--coral)"><b>Open to anyone with the link</b><p>Set each folder or file to "Anyone with the link can view", so we can open it without asking.</p></li>
+    <li style="--c:var(--leaf)"><b>One profile photo</b><p>A link to a single photo of you. We use it as your picture in our artist panel.</p></li>
+    <li style="--c:var(--peri)"><b>Keep it fresh</b><p>New photos or a new bio? Send the form again with the same email. It replaces your old kit.</p></li>
+  </ul>
+
+  <div class="locked" role="alert">This page only works with the private link from IZIKI. Ask us at <a href="mailto:izikiteam@gmail.com">izikiteam@gmail.com</a> for your link.</div>
+
+  <form id="kit" novalidate>
+    <div class="hp" aria-hidden="true"><label>Leave empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+    <fieldset>
+      <legend><span class="num">01</span> The artist</legend>
+      <div class="field"><label for="artist">Artist name <span class="req">*</span></label><input id="artist" name="artist" type="text" required maxlength="80" autocomplete="nickname"></div>
+      <div class="field"><label for="realname">Your real name</label><input id="realname" name="realName" type="text" maxlength="80" autocomplete="name"></div>
+      <div class="field"><label for="email">Email <span class="req">*</span></label><input id="email" name="email" type="email" required maxlength="120" autocomplete="email"></div>
+      <div class="field"><label for="city">City, country</label><input id="city" name="city" type="text" maxlength="80" placeholder="Johannesburg, South Africa"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="num">02</span> Your kit</legend>
+      <p class="hint full">Google Drive, Dropbox or your own site. Set each link to "Anyone with the link can view".</p>
+      <div class="field full"><label for="photo">Profile photo <span class="req">*</span></label><input id="photo" name="photo" type="url" required maxlength="500" placeholder="Link to one photo of you"><p class="hint">One square photo, up to 500 × 500 px. We use it as your picture in our artist panel.</p></div>
+      <div class="field full"><label for="folder">Press kit folder</label><input id="folder" name="folder" type="url" maxlength="500" placeholder="One Google Drive folder with everything: photos, videos, bio, logo"><p class="hint">Easiest option. If you share one folder with everything, the boxes below are optional.</p></div>
+      <div class="field"><label for="photos">Photos</label><input id="photos" name="photos" type="url" maxlength="500" placeholder="Folder with high-res press photos"></div>
+      <div class="field"><label for="videos">Videos</label><input id="videos" name="videos" type="url" maxlength="500" placeholder="Folder or link to your videos"></div>
+      <div class="field full"><label for="bio">Bio</label><textarea id="bio" name="bio" maxlength="3000" placeholder="Write your bio here, or link to it below"></textarea><div class="counter" id="bioCount">0 / 3000</div></div>
+      <div class="field full"><label for="bioLink">Or a link to your bio</label><input id="bioLink" name="bioLink" type="url" maxlength="500" placeholder="Google Doc or file with your bio"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="num">03</span> Where to find you</legend>
+      <div class="field"><label for="instagram">Instagram <span class="req">*</span></label><input id="instagram" name="instagram" type="text" required maxlength="200" placeholder="@yourname or full link"></div>
+      <div class="field"><label for="soundcloud">SoundCloud</label><input id="soundcloud" name="soundcloud" type="url" maxlength="300" placeholder="https://soundcloud.com/…"></div>
+      <div class="field"><label for="spotify">Spotify</label><input id="spotify" name="spotify" type="url" maxlength="300" placeholder="https://open.spotify.com/artist/…"></div>
+      <div class="field"><label for="beatport">Beatport</label><input id="beatport" name="beatport" type="url" maxlength="300" placeholder="https://www.beatport.com/artist/…"></div>
+      <div class="field full"><label for="site">Website or EPK</label><input id="site" name="site" type="url" maxlength="300" placeholder="https://"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="num">04</span> Your releases on IZIKI</legend>
+      <div class="field full"><label for="releases">Tracks you've released (or are releasing) on IZIKI</label><textarea id="releases" name="releases" maxlength="2000" placeholder="One per line, e.g.&#10;Oxum Rising (Original Mix) · March 2026 · https://www.beatport.com/release/…&#10;Legba (with Ama) · coming June 2026"></textarea><p class="hint">Title, date and a link if it's out. This helps us find your music for radio shows, release promo and our website.</p></div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="num">05</span> The fine print</legend>
+      <label class="check full"><input type="checkbox" name="consent" required><span>I'm happy for IZIKI to use the files behind these links to promote my music and shows. <span class="req">*</span></span></label>
+    </fieldset>
+
+    <div class="submit">
+      <button type="submit" id="send">Send my kit</button>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <section class="done" id="done" tabindex="-1">
+    <div class="label">Received</div>
+    <h2>Your kit is <span id="doneWord">in.</span></h2>
+    <p>Thank you. If something changes, send this form again with the same email and it will replace your old kit.</p>
+  </section>
+
+  <footer>
+    <span>IZIKI · Artist press kits</span>
+    <span>Questions? <a href="mailto:izikiteam@gmail.com">izikiteam@gmail.com</a></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var API = 'https://script.google.com/macros/s/AKfycbxOmxWGdCOJngU6kRlQCkOjVnzOiRyahI5gNTlr5c0PnpCryRTo3Fa3QsWqenX5Hw9A/exec';
+  var K = new URLSearchParams(location.search).get('k') || '';
+  var page = document.getElementById('page');
+  if (!K) { page.classList.add('nokey'); return; }
+
+  var form = document.getElementById('kit');
+  var btn = document.getElementById('send');
+  var status = document.getElementById('status');
+  function say(msg, err) { status.textContent = msg; status.className = 'status' + (err ? ' err' : ''); }
+  var bio = document.getElementById('bio'), bioCount = document.getElementById('bioCount');
+  bio.addEventListener('input', function () { bioCount.textContent = bio.value.length + ' / 3000'; });
+
+  // Add https:// when someone pastes "drive.google.com/…" without it
+  form.querySelectorAll('input[type=url]').forEach(function (el) {
+    el.addEventListener('blur', function () {
+      var v = el.value.trim();
+      if (v && !/^https?:\/\//i.test(v) && /\./.test(v)) el.value = 'https://' + v;
+    });
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    form.querySelectorAll('input[type=url]').forEach(function (el) { el.dispatchEvent(new Event('blur')); });
+    if (!form.checkValidity()) {
+      var bad = form.querySelector(':invalid');
+      say(bad && bad.type === 'url' && bad.value ? 'One of the links is not a full link. It should start with https://' : 'Please fill in the fields marked *.', true);
+      if (bad) bad.focus();
+      return;
+    }
+    var f = function (n) { return form.elements[n].value.trim(); };
+    if (!f('folder') && !(f('photos') && (f('bio') || f('bioLink')))) {
+      say('Please share your press kit folder, or your photos plus your bio.', true);
+      form.elements.folder.focus();
+      return;
+    }
+    var data = { kit: true, k: K };
+    new FormData(form).forEach(function (v, k) { data[k] = String(v).trim(); });
+    data.consent = !!data.consent;
+
+    btn.disabled = true; say('Sending…');
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j.ok) throw new Error(j.error || 'Something went wrong.');
+        document.getElementById('doneWord').textContent = j.updated ? 'updated.' : 'in.';
+        page.classList.add('sent');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('done').focus({ preventScroll: true });
+      })
+      .catch(function (err) {
+        btn.disabled = false;
+        say(err.message === 'Failed to fetch' ? 'Could not reach the server. Please try again.' : err.message, true);
+      });
+  });
+})();
+</script>
+</body>
+</html>

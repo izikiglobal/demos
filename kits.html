@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IZIKI · Press Kits</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#2b2522">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:ital,wght@0,400;0,700;0,800;1,400&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --ground:#2b2522; --ground-2:#36302b; --field:#231e1b;
+  --ink:#f3e6cc; --muted:#c9b79a; --dim:#8a7b67;
+  --marigold:#eda644; --coral:#ea6356; --leaf:#8fc06a; --peri:#7d7cc0;
+  --line:#4a413a;
+  --head:"Anton","Arial Narrow","Helvetica Neue",sans-serif;
+  --display:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--display);line-height:1.5}
+a{color:var(--marigold)}
+.wrap{max-width:1240px;margin:0 auto;padding:36px max(18px,env(safe-area-inset-right)) 80px max(18px,env(safe-area-inset-left))}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px}
+.wordmark{font-weight:800;letter-spacing:.32em;font-size:.9rem;display:inline-flex;align-items:center;gap:10px}
+.wordmark::before{content:"";width:12px;height:12px;background:var(--coral);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+h1{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:clamp(2.2rem,5vw,3.6rem);line-height:1;margin:10px 0 0}
+h1 span{color:var(--coral)}
+.count{color:var(--muted);font-size:.95rem}
+.tools{position:sticky;top:0;z-index:5;background:var(--ground);padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:22px;display:grid;gap:12px}
+.search{width:100%;max-width:420px;font:inherit;font-size:1rem;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:999px;padding:11px 18px}
+.search:focus-visible{outline:none;border-color:var(--marigold)}
+.az{display:flex;flex-wrap:wrap;gap:4px}
+.az a,.az span{font-family:var(--head);font-size:1.05rem;width:30px;height:30px;display:grid;place-items:center;border-radius:3px;text-decoration:none}
+.az a{color:var(--ink);background:var(--ground-2)}
+.az a:hover{background:var(--marigold);color:var(--ground)}
+.az span{color:#5a5047}
+.letter{font-family:var(--head);font-size:2.2rem;color:var(--marigold);margin:30px 0 12px;scroll-margin-top:120px;border-bottom:1px solid var(--line);line-height:1.2}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:18px}
+.card{background:var(--ground-2);border-radius:4px;overflow:hidden;display:flex;flex-direction:column}
+.pic{aspect-ratio:1/1;max-width:500px;background:var(--field);position:relative;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.pic .ini{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--head);font-size:4.5rem;color:var(--marigold);background:linear-gradient(135deg,#3a322c,#231e1b)}
+.pic a.open{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:.75rem;font-weight:800;padding:4px 9px;border-radius:999px;text-decoration:none}
+.new{position:absolute;left:8px;top:8px;background:var(--leaf);color:var(--ground);font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
+.body{padding:14px 16px 16px;display:grid;gap:10px;flex:1;align-content:start}
+.name{font-family:var(--head);font-size:1.6rem;text-transform:uppercase;line-height:1.05;margin:0}
+.meta{color:var(--muted);font-size:.86rem;margin:-4px 0 0}
+.btns{display:flex;flex-wrap:wrap;gap:7px}
+.b{font-weight:800;font-size:.82rem;text-decoration:none;color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;background:none;cursor:pointer;font-family:inherit}
+.b:hover{border-color:var(--marigold)}
+.b.main{background:var(--marigold);border-color:var(--marigold);color:var(--ground)}
+.b.dot::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
+.bio{font-size:.9rem;color:var(--ink);white-space:pre-line;background:var(--field);border-radius:3px;padding:10px 12px;max-height:5.6em;overflow:hidden;position:relative;cursor:pointer}
+.bio.open{max-height:none}
+.bio:not(.open)::after{content:"Read more ↓";position:absolute;right:0;bottom:0;padding:0 10px 4px 30px;background:linear-gradient(90deg,transparent,var(--field) 40%);color:var(--marigold);font-weight:800;font-size:.78rem}
+.rel{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:.88rem}
+.rel li{padding-left:16px;position:relative}
+.rel li::before{content:"♪";position:absolute;left:0;color:var(--marigold)}
+.rel a{word-break:break-all}
+.sub{font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:2px 0 -4px}
+.foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.copied{color:var(--leaf);font-size:.82rem;font-weight:800;align-self:center}
+.empty{color:var(--muted);padding:40px 0;text-align:center}
+.err{color:var(--coral)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="wordmark">IZIKI</div>
+      <h1>Press <span>Kits</span></h1>
+    </div>
+    <div class="count" id="count"></div>
+  </header>
+  <div class="tools">
+    <input class="search" id="q" type="search" placeholder="Search artist, city or IZIKI track…" aria-label="Search artists or tracks">
+    <nav class="az" id="az" aria-label="Jump to letter"></nav>
+  </div>
+  <main id="main"><p class="empty">Loading press kits…</p></main>
+</div>
+
+<script>
+(function () {
+  var API = 'https://script.google.com/macros/s/AKfycbxOmxWGdCOJngU6kRlQCkOjVnzOiRyahI5gNTlr5c0PnpCryRTo3Fa3QsWqenX5Hw9A/exec';
+  var KEY = new URLSearchParams(location.search).get('key') || '';
+  var main = document.getElementById('main'), q = document.getElementById('q');
+  var kits = [];
+
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function url(v) { v = String(v || '').trim(); return /^https?:\/\//i.test(v) ? v : ''; }
+  function ig(v) { v = String(v || '').trim().replace(/^@/, ''); if (!v) return ''; return /^https?:/i.test(v) ? v : 'https://instagram.com/' + v; }
+  function initials(n) { return String(n || '?').trim().split(/\s+/).slice(0, 2).map(function (w) { return w[0]; }).join('').toUpperCase(); }
+  function firstLetter(n) { var c = String(n || '#').trim().charAt(0).toUpperCase(); return /[A-Z]/.test(c) ? c : '#'; }
+  function fmt(d) { var t = new Date(d); return isNaN(t) ? '' : t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
+
+  // Turn a share link into something an <img> can show
+  function imgSrc(link) {
+    var u = url(link), m;
+    if (!u) return '';
+    if ((m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([\w-]{20,})/i))) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w500';
+    if (/drive\.google\.com\/drive\/folders\//i.test(u)) return '';
+    if (/dropbox\.com\//i.test(u)) return u.replace(/([?&])dl=0/, '$1raw=1') + (/[?&](raw|dl)=1/.test(u) ? '' : (u.indexOf('?') > -1 ? '&' : '?') + 'raw=1');
+    return u;
+  }
+
+  function copyText(k) {
+    var L = [k['Artist'] + (k['City'] ? ' (' + k['City'] + ')' : '')];
+    [['Press kit', k['Press kit folder']], ['Profile photo', k['Profile photo']], ['Photos', k['Photos']], ['Videos', k['Videos']],
+     ['Bio', k['Bio link']], ['Instagram', ig(k['Instagram'])], ['SoundCloud', k['SoundCloud']], ['Spotify', k['Spotify']],
+     ['Beatport', k['Beatport']], ['Website', k['Website']]].forEach(function (x) { if (x[1]) L.push(x[0] + ': ' + x[1]); });
+    if (k['IZIKI releases']) L.push('', 'On IZIKI:', k['IZIKI releases']);
+    if (k['Bio']) L.push('', k['Bio']);
+    return L.join('\n');
+  }
+
+  function linkify(t) { return esc(t).replace(/https?:\/\/[^\s<]+/g, function (u) { return '<a href="' + u + '" target="_blank" rel="noopener">' + (u.length > 40 ? u.slice(0, 38) + '…' : u) + '</a>'; }); }
+  function rel(k) { return String(k['IZIKI releases'] || '').split(/\n+/).filter(function (l) { return l.trim(); }).map(function (l) { return '<li>' + linkify(l.trim()) + '</li>'; }).join(''); }
+  function card(k, i) {
+    var src = imgSrc(k['Profile photo']);
+    var isNew = (Date.now() - new Date(k['Updated']).getTime()) < 7 * 864e5;
+    var files = [['Press kit folder', k['Press kit folder'], true], ['Photos', k['Photos']], ['Videos', k['Videos']], ['Bio doc', k['Bio link']]]
+      .filter(function (x) { return url(x[1]); })
+      .map(function (x) { return '<a class="b' + (x[2] ? ' main' : '') + '" href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + x[0] + ' ↗</a>'; }).join('');
+    var soc = [['Instagram', ig(k['Instagram']), '#E1306C'], ['SoundCloud', url(k['SoundCloud']), '#FF5500'], ['Spotify', url(k['Spotify']), '#1DB954'],
+               ['Beatport', url(k['Beatport']), '#01FF95'], ['Website', url(k['Website']), 'var(--marigold)']]
+      .filter(function (x) { return x[1]; })
+      .map(function (x) { return '<a class="b dot" style="--c:' + x[2] + '" href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + x[0] + '</a>'; }).join('');
+    return '<article class="card">' +
+      '<div class="pic">' +
+        (src ? '<img loading="lazy" referrerpolicy="no-referrer" alt="' + esc(k['Artist']) + '" src="' + esc(src) + '" onerror="this.remove()">' : '') +
+        '<div class="ini" style="z-index:-1">' + esc(initials(k['Artist'])) + '</div>' +
+        (isNew ? '<span class="new">' + (k['First sent'] && Math.abs(new Date(k['First sent']) - new Date(k['Updated'])) > 6e4 ? 'Updated' : 'New') + '</span>' : '') +
+        (url(k['Profile photo']) ? '<a class="open" href="' + esc(k['Profile photo']) + '" target="_blank" rel="noopener">Photo ↗</a>' : '') +
+      '</div>' +
+      '<div class="body">' +
+        '<h2 class="name">' + esc(k['Artist']) + '</h2>' +
+        '<p class="meta">' + esc([k['City'], 'Updated ' + fmt(k['Updated'])].filter(Boolean).join(' · ')) + '</p>' +
+        (files ? '<div class="btns">' + files + '</div>' : '') +
+        (k['Bio'] ? '<div class="bio" title="Click to expand">' + esc(k['Bio']) + '</div>' : '') +
+        (rel(k) ? '<p class="sub">On IZIKI</p><ul class="rel">' + rel(k) + '</ul>' : '') +
+        (soc ? '<div class="btns">' + soc + '</div>' : '') +
+        '<div class="foot">' +
+          '<button class="b" type="button" data-copy="' + i + '">Copy all links</button>' +
+          (k['Bio'] ? '<button class="b" type="button" data-copybio="' + i + '">Copy bio</button>' : '') +
+          (k['Email'] ? '<a class="b" href="mailto:' + esc(k['Email']) + '">Email</a>' : '') +
+        '</div>' +
+      '</div></article>';
+  }
+
+  function render() {
+    var term = q.value.trim().toLowerCase();
+    var list = kits.map(function (k, i) { return { k: k, i: i }; }).filter(function (x) {
+      return !term || [x.k['Artist'], x.k['City'], x.k['Real name'], x.k['IZIKI releases']].join(' ').toLowerCase().indexOf(term) > -1;
+    });
+    var groups = {};
+    list.forEach(function (x) { var l = firstLetter(x.k['Artist']); (groups[l] = groups[l] || []).push(x); });
+    var letters = Object.keys(groups).sort(function (a, b) { return a === '#' ? 1 : b === '#' ? -1 : a.localeCompare(b); });
+    document.getElementById('az').innerHTML = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('').map(function (l) {
+      return groups[l] ? '<a href="#L-' + (l === '#' ? 'num' : l) + '">' + l + '</a>' : '<span>' + l + '</span>';
+    }).join('');
+    document.getElementById('count').textContent = kits.length + ' artist' + (kits.length === 1 ? '' : 's');
+    main.innerHTML = letters.length ? letters.map(function (l) {
+      return '<h3 class="letter" id="L-' + (l === '#' ? 'num' : l) + '">' + l + '</h3><div class="grid">' +
+        groups[l].map(function (x) { return card(x.k, x.i); }).join('') + '</div>';
+    }).join('') : '<p class="empty">' + (kits.length ? 'No artist matches “' + esc(q.value) + '”.' : 'No press kits yet. Send artists the press-kit form link.') + '</p>';
+  }
+
+  function flash(btn, text) {
+    var old = btn.textContent; btn.textContent = text;
+    setTimeout(function () { btn.textContent = old; }, 1600);
+  }
+  main.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-copy],[data-copybio],.bio');
+    if (!b) return;
+    if (b.classList.contains('bio')) { b.classList.toggle('open'); return; }
+    var k = kits[+(b.dataset.copy || b.dataset.copybio)];
+    var text = b.dataset.copy != null ? copyText(k) : k['Bio'];
+    navigator.clipboard.writeText(text).then(function () { flash(b, 'Copied ✓'); }, function () { flash(b, 'Copy failed'); });
+  });
+  q.addEventListener('input', render);
+
+  if (!KEY) { main.innerHTML = '<p class="empty err">This link is missing its key. Use the panel link from the IZIKI email.</p>'; return; }
+  fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'kitData', args: [KEY] }) })
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      if (!j.ok) throw new Error(j.error === 'Not allowed' ? 'This link is not valid.' : j.error);
+      kits = JSON.parse(j.result || '[]').sort(function (a, b) { return String(a['Artist']).localeCompare(String(b['Artist']), undefined, { sensitivity: 'base' }); });
+      render();
+    })
+    .catch(function (err) { main.innerHTML = '<p class="empty err">Could not load press kits. ' + esc(err && err.message) + '</p>'; });
+})();
+</script>
+</body>
+</html>
