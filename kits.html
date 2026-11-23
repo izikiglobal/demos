@@ -6,76 +6,77 @@
 <title>IZIKI · Press Kits</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<meta name="theme-color" content="#2b2522">
+<meta name="theme-color" content="#fbf2ed">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:ital,wght@0,400;0,700;0,800;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@400;600;700&display=swap">
 <style>
 :root{
-  color-scheme:dark;
-  --ground:#2b2522; --ground-2:#36302b; --field:#231e1b;
-  --ink:#f3e6cc; --muted:#c9b79a; --dim:#8a7b67;
-  --marigold:#eda644; --coral:#ea6356; --leaf:#8fc06a; --peri:#7d7cc0;
-  --line:#4a413a;
-  --head:"Anton","Arial Narrow","Helvetica Neue",sans-serif;
-  --display:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+  --ground:#fbf2ed; --ground-2:#fffaf7; --field:#f6ebe5;
+  --ink:#3a3330; --muted:#6f6764; --dim:#a99e98; --grey:#7b7775;
+  --marigold:#f2c35b; --coral:#d672b0; --leaf:#7fb47a; --peri:#9cc3e8;
+  --line:#e6d8d0; --night:#3a3330;
+  --head:"Archivo","Arial Black",sans-serif;
+  --display:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--display);line-height:1.5}
-a{color:var(--marigold)}
-.wrap{max-width:1240px;margin:0 auto;padding:36px max(18px,env(safe-area-inset-right)) 80px max(18px,env(safe-area-inset-left))}
-header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px}
-.wordmark{font-weight:800;letter-spacing:.32em;font-size:.9rem;display:inline-flex;align-items:center;gap:10px}
-.wordmark::before{content:"";width:12px;height:12px;background:var(--coral);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
-h1{font-family:var(--head);font-weight:400;text-transform:uppercase;font-size:clamp(2.2rem,5vw,3.6rem);line-height:1;margin:10px 0 0}
-h1 span{color:var(--coral)}
-.count{color:var(--muted);font-size:.95rem}
+a{color:var(--ink)}
+.wrap{max-width:1240px;margin:0 auto;padding:26px max(18px,env(safe-area-inset-right)) 80px max(18px,env(safe-area-inset-left))}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:18px}
+.brand img{width:120px;height:auto}
+h1{font-family:var(--head);font-weight:900;font-stretch:125%;text-transform:uppercase;color:var(--grey);font-size:clamp(2rem,5vw,3.4rem);line-height:1;margin:0}
+h1 span{font-weight:300}
+.count{color:var(--muted);font-size:.95rem;font-weight:600}
 .tools{position:sticky;top:0;z-index:5;background:var(--ground);padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:22px;display:grid;gap:12px}
-.search{width:100%;max-width:420px;font:inherit;font-size:1rem;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:999px;padding:11px 18px}
-.search:focus-visible{outline:none;border-color:var(--marigold)}
+.search{width:100%;max-width:440px;font:inherit;font-size:1rem;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:11px 18px}
+.search:focus-visible{outline:none;border-color:var(--marigold);box-shadow:0 0 0 4px rgba(242,195,91,.3)}
 .az{display:flex;flex-wrap:wrap;gap:4px}
-.az a,.az span{font-family:var(--head);font-size:1.05rem;width:30px;height:30px;display:grid;place-items:center;border-radius:3px;text-decoration:none}
-.az a{color:var(--ink);background:var(--ground-2)}
-.az a:hover{background:var(--marigold);color:var(--ground)}
-.az span{color:#5a5047}
-.letter{font-family:var(--head);font-size:2.2rem;color:var(--marigold);margin:30px 0 12px;scroll-margin-top:120px;border-bottom:1px solid var(--line);line-height:1.2}
+.az a,.az span{font-family:var(--head);font-weight:800;font-stretch:115%;font-size:.95rem;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;text-decoration:none}
+.az a{color:var(--ink);background:#fff;border:1px solid var(--line)}
+.az a:hover{background:var(--marigold);border-color:var(--marigold)}
+.az span{color:#cfc4be}
+.letter{font-family:var(--head);font-weight:900;font-stretch:125%;font-size:2.2rem;color:var(--grey);margin:30px 0 12px;scroll-margin-top:120px;border-bottom:1px solid var(--line);line-height:1.2}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:18px}
-.card{background:var(--ground-2);border-radius:4px;overflow:hidden;display:flex;flex-direction:column}
+.card{background:var(--ground-2);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
 .pic{aspect-ratio:1/1;max-width:500px;background:var(--field);position:relative;overflow:hidden}
 .pic img{width:100%;height:100%;object-fit:cover;display:block}
-.pic .ini{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--head);font-size:4.5rem;color:var(--marigold);background:linear-gradient(135deg,#3a322c,#231e1b)}
+.pic .ini{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--head);font-weight:900;font-stretch:125%;font-size:4rem;color:var(--marigold);background:var(--night)}
 .pic a.open{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:.75rem;font-weight:800;padding:4px 9px;border-radius:999px;text-decoration:none}
-.new{position:absolute;left:8px;top:8px;background:var(--leaf);color:var(--ground);font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
+.new{position:absolute;left:8px;top:8px;background:var(--marigold);color:var(--ink);font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
 .body{padding:14px 16px 16px;display:grid;gap:10px;flex:1;align-content:start}
-.name{font-family:var(--head);font-size:1.6rem;text-transform:uppercase;line-height:1.05;margin:0}
+.name{font-family:var(--head);font-weight:900;font-stretch:118%;font-size:1.35rem;text-transform:uppercase;line-height:1.05;margin:0}
 .meta{color:var(--muted);font-size:.86rem;margin:-4px 0 0}
 .btns{display:flex;flex-wrap:wrap;gap:7px}
-.b{font-weight:800;font-size:.82rem;text-decoration:none;color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;background:none;cursor:pointer;font-family:inherit}
-.b:hover{border-color:var(--marigold)}
-.b.main{background:var(--marigold);border-color:var(--marigold);color:var(--ground)}
+.b{font-weight:700;font-size:.82rem;text-decoration:none;color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;background:none;cursor:pointer;font-family:inherit}
+.b:hover{border-color:var(--marigold);background:#fff8e6}
+.b.main:hover{background:var(--marigold);border-color:var(--marigold);color:var(--ink)}
+.b.main{background:var(--night);border-color:var(--night);color:#fff}
 .b.dot::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
 .bio{font-size:.9rem;color:var(--ink);white-space:pre-line;background:var(--field);border-radius:3px;padding:10px 12px;max-height:5.6em;overflow:hidden;position:relative;cursor:pointer}
 .bio.open{max-height:none}
-.bio:not(.open)::after{content:"Read more ↓";position:absolute;right:0;bottom:0;padding:0 10px 4px 30px;background:linear-gradient(90deg,transparent,var(--field) 40%);color:var(--marigold);font-weight:800;font-size:.78rem}
+.bio:not(.open)::after{content:"Read more ↓";position:absolute;right:0;bottom:0;padding:0 10px 4px 30px;background:linear-gradient(90deg,transparent,var(--field) 40%);color:var(--ink);font-weight:800;font-size:.78rem}
 .rel{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:.88rem}
 .rel li{padding-left:16px;position:relative}
-.rel li::before{content:"♪";position:absolute;left:0;color:var(--marigold)}
+.rel li::before{content:"♪";position:absolute;left:0;color:var(--coral)}
 .rel a{word-break:break-all}
 .sub{font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:2px 0 -4px}
 .foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
 .copied{color:var(--leaf);font-size:.82rem;font-weight:800;align-self:center}
 .empty{color:var(--muted);padding:40px 0;text-align:center}
-.err{color:var(--coral)}
+.err{color:#b8407f}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div>
-      <div class="wordmark">IZIKI</div>
-      <h1>Press <span>Kits</span></h1>
+    <div class="brand">
+      <img src="img/izk-logo.png" width="400" height="245" alt="IZIKI">
+      <h1>Press <span>kits</span></h1>
     </div>
     <div class="count" id="count"></div>
   </header>
