@@ -601,7 +601,7 @@ function submitKit_(d) {
   if (!s_(d.artist)) return { ok: false, error: 'Please add your artist name.' };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: 'Please add a valid email.' };
   if (!isUrl_(d.photo)) return { ok: false, error: 'Please add a link to your profile photo (starting with https://).' };
-  if (!d.folder && !(d.photos && (s_(d.bio) || d.bioLink))) return { ok: false, error: 'Please share your press kit folder, or your photos plus your bio.' };
+  if (!d.folder && !(d.photos && d.videos && (s_(d.bio) || d.bioLink))) return { ok: false, error: 'Please share your press kit folder (Option A), or your photos, videos and bio (Option B).' };
   var links = ['folder', 'photos', 'videos', 'bioLink', 'soundcloud', 'spotify', 'beatport', 'site'];
   for (var i = 0; i < links.length; i++) {
     if (d[links[i]] && !isUrl_(d[links[i]])) return { ok: false, error: 'One of the links is not a full link (it should start with https://).' };
