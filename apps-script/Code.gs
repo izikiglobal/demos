@@ -653,7 +653,7 @@ function submitKit_(d) {
 
 /** Profile photos: one small JPEG per artist in the IZIKI Drive (folder below). */
 var KIT_PHOTO_FOLDER = 'IZIKI Press kits – profile photos';
-var KIT_PHOTO_MAX = 160 * 1024; // bytes; the form sends ~30–60 KB
+var KIT_PHOTO_MAX = 32 * 1024; // bytes; the form keeps photos under 30 KB
 
 function kitPhotoFolder_() {
   var props = PropertiesService.getScriptProperties(), id = props.getProperty('KIT_PHOTO_FOLDER_ID');
