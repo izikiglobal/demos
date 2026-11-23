@@ -65,7 +65,8 @@ function doPost(e) {
   var d;
   try { d = JSON.parse((e && e.postData && e.postData.contents) || '{}'); }
   catch (x) { return json_({ ok: false, error: 'Bad request.' }); }
-  if (d.action) return json_(roomApi_(d)); // Listening Room calls
+  if (d.action) return json_(roomApi_(d)); // Listening Room + Press Kits panel calls
+  if (d.kit) return json_(submitKit_(d));   // artist press-kit form
 
   var lock = LockService.getScriptLock();
   try {
@@ -107,7 +108,7 @@ function doPost(e) {
 }
 
 // ---------- Listening Room API (called from room.html on GitHub Pages, or Room.html) ----------
-var ROOM_FNS = { roomData: roomData, rateTrack: rateTrack, setStatus: setStatus, saveNotes: saveNotes };
+var ROOM_FNS = { roomData: roomData, rateTrack: rateTrack, setStatus: setStatus, saveNotes: saveNotes, kitData: kitData };
 
 function roomApi_(d) {
   var fn = ROOM_FNS[d.action];
@@ -572,4 +573,108 @@ function testSubmission() {
     style: 'Afro house', bpm: '122', owned: true, noAI: true, consent: true
   }) } });
   Logger.log(r.getContent());
+}
+
+// =====================================================================
+// PRESS KITS: artists send links to their own files (Drive/Dropbox…);
+// we keep only the links, one row per artist (matched by email).
+// =====================================================================
+var KIT_SHEET = 'Press kits';
+var KIT_HEADERS = ['Updated', 'Artist', 'Real name', 'Email', 'City', 'Profile photo', 'Press kit folder',
+  'Photos', 'Videos', 'Bio', 'Bio link', 'Instagram', 'SoundCloud', 'Spotify', 'Beatport', 'Website', 'IZIKI releases', 'First sent', 'ID'];
+var KIT_PAGES = 'https://izikiglobal.github.io/demos/';
+
+function kitSheet_() { return tab_(KIT_SHEET, KIT_HEADERS); }
+
+function kitKey_() {
+  var p = PropertiesService.getScriptProperties(), k = p.getProperty('KIT_KEY');
+  if (!k) { k = Utilities.getUuid().replace(/-/g, '').slice(0, 16); p.setProperty('KIT_KEY', k); }
+  return k;
+}
+
+function isUrl_(v) { return /^https?:\/\/\S+\.\S+/i.test(String(v || '').trim()); }
+
+function submitKit_(d) {
+  if (d.website) return { ok: true };                       // honeypot
+  if (d.k !== kitKey_()) return { ok: false, error: 'This form link is not valid. Ask IZIKI for a new one.' };
+  var email = s_(d.email).toLowerCase();
+  if (!s_(d.artist)) return { ok: false, error: 'Please add your artist name.' };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: 'Please add a valid email.' };
+  if (!isUrl_(d.photo)) return { ok: false, error: 'Please add a link to your profile photo (starting with https://).' };
+  if (!d.folder && !(d.photos && (s_(d.bio) || d.bioLink))) return { ok: false, error: 'Please share your press kit folder, or your photos plus your bio.' };
+  var links = ['folder', 'photos', 'videos', 'bioLink', 'soundcloud', 'spotify', 'beatport', 'site'];
+  for (var i = 0; i < links.length; i++) {
+    if (d[links[i]] && !isUrl_(d[links[i]])) return { ok: false, error: 'One of the links is not a full link (it should start with https://).' };
+  }
+  if (!s_(d.instagram)) return { ok: false, error: 'Please add your Instagram.' };
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var sh = kitSheet_(), now = new Date(), row = 0, id = '', first = now;
+    var last = sh.getLastRow();
+    if (last > 1) {
+      var vals = sh.getRange(2, 1, last - 1, KIT_HEADERS.length).getValues();
+      var ei = KIT_HEADERS.indexOf('Email');
+      for (var r = 0; r < vals.length; r++) {
+        if (String(vals[r][ei]).toLowerCase() === email) {
+          row = r + 2; id = vals[r][KIT_HEADERS.indexOf('ID')]; first = vals[r][KIT_HEADERS.indexOf('First sent')] || now; break;
+        }
+      }
+    }
+    if (!id) id = 'KIT-' + Utilities.formatDate(now, 'Etc/UTC', 'yyMMdd') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+    var data = [now, s_(d.artist), s_(d.realName), email, s_(d.city), s_(d.photo), s_(d.folder),
+      s_(d.photos), s_(d.videos), (function (v) { return /^[=+\-@]/.test(v) ? "'" + v : v; })(String(d.bio || '').trim().slice(0, 3000)), s_(d.bioLink), s_(d.instagram), s_(d.soundcloud), s_(d.spotify), s_(d.beatport), s_(d.site), (function (v) { return /^[=+\-@]/.test(v) ? "'" + v : v; })(String(d.releases || '').trim().slice(0, 2000)), first, id];
+    if (row) sh.getRange(row, 1, 1, data.length).setValues([data]); else sh.appendRow(data);
+    notifyKit_(d, !!row);
+    return { ok: true, updated: !!row };
+  } finally { lock.releaseLock(); }
+}
+
+function notifyKit_(d, updated) {
+  var panel = KIT_PAGES + 'kits.html?key=' + roomKey_();
+  var rows = [['Artist', d.artist], ['Real name', d.realName], ['Email', d.email], ['City', d.city],
+    ['Profile photo', d.photo], ['Press kit folder', d.folder], ['Photos', d.photos], ['Videos', d.videos],
+    ['Bio', d.bio], ['Bio link', d.bioLink], ['Instagram', d.instagram], ['SoundCloud', d.soundcloud],
+    ['Spotify', d.spotify], ['Beatport', d.beatport], ['Website', d.site], ['IZIKI releases', d.releases]]
+    .filter(function (r) { return r[1]; }).map(function (r) {
+      var v = isUrl_(r[1]) ? '<a href="' + esc_(r[1]) + '" style="color:#eda644">' + esc_(r[1]) + '</a>' : '<span style="white-space:pre-line">' + esc_(r[1]) + '</span>';
+      return '<tr><td style="padding:4px 14px 4px 0;color:#9a8a72;vertical-align:top">' + r[0] + '</td><td style="padding:4px 0">' + v + '</td></tr>';
+    }).join('');
+  MailApp.sendEmail({
+    to: CONFIG.NOTIFY_EMAIL, name: CONFIG.LABEL_NAME, replyTo: s_(d.email),
+    subject: 'Press kit ' + (updated ? 'updated' : 'received') + ' · ' + s_(d.artist),
+    htmlBody: '<div style="background:#2b2522;padding:28px 24px;font-family:Georgia,serif;color:#f3e6cc;line-height:1.55">' +
+      '<p style="font:800 12px Arial,sans-serif;letter-spacing:.24em;color:#eda644;margin:0 0 12px">PRESS KIT ' + (updated ? 'UPDATED' : 'RECEIVED') + '</p>' +
+      '<p style="font:800 26px Arial,sans-serif;margin:0 0 16px">' + esc_(d.artist) + '</p>' +
+      '<table style="font:14px Arial,sans-serif;color:#f3e6cc;border-collapse:collapse">' + rows + '</table>' +
+      '<p style="margin-top:22px"><a href="' + esc_(panel) + '" style="color:#f3e6cc;font:800 15px Arial,sans-serif">Open the Press Kits panel →</a></p></div>'
+  });
+}
+
+/** Panel data (team key). */
+function kitData(key) {
+  checkKey_(key);
+  var sh = kitSheet_(), last = sh.getLastRow();
+  if (last < 2) return JSON.stringify([]);
+  var v = sh.getRange(1, 1, last, sh.getLastColumn()).getValues(), h = v[0];
+  var out = v.slice(1).map(function (row) {
+    var o = {}; h.forEach(function (k, i) { o[k] = row[i] instanceof Date ? row[i].toISOString() : row[i]; }); return o;
+  });
+  return JSON.stringify(out);
+}
+
+/** Run once from the editor: creates the tab and emails izikiteam the artist form link + the panel link. */
+function kitLinks() {
+  kitSheet_();
+  var form = KIT_PAGES + 'kit.html?k=' + kitKey_();
+  var panel = KIT_PAGES + 'kits.html?key=' + roomKey_();
+  Logger.log('Artist form: ' + form + '\nPanel: ' + panel);
+  MailApp.sendEmail({
+    to: CONFIG.NOTIFY_EMAIL, name: CONFIG.LABEL_NAME, subject: 'IZIKI · Press kit links',
+    htmlBody: '<div style="background:#2b2522;padding:28px 24px;font-family:Georgia,serif;color:#f3e6cc;line-height:1.6">' +
+      '<p style="font:800 12px Arial,sans-serif;letter-spacing:.24em;color:#eda644;margin:0 0 14px">PRESS KITS</p>' +
+      '<p><b>Send this to IZIKI artists</b> (private form, they paste links to their own files):<br><a href="' + form + '" style="color:#eda644">' + form + '</a></p>' +
+      '<p><b>Your panel</b> (keep it in the team, bookmark it):<br><a href="' + panel + '" style="color:#eda644">' + panel + '</a></p></div>'
+  });
 }
