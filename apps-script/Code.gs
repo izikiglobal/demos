@@ -67,7 +67,7 @@ function doPost(e) {
   catch (x) { return json_({ ok: false, error: 'Bad request.' }); }
   if (d.action) return json_(roomApi_(d)); // Listening Room + Press Kits panel calls
   if (d.catalogue) return json_(kitCatalogue_(d.k)); // release list for the press-kit form
-  if (d.kit) return json_(submitKit_(d));   // artist press-kit form
+  if (d.kit) { try { return json_(submitKit_(d)); } catch (x) { return json_({ ok: false, error: String(x && x.message || x) }); } } // artist press-kit form
 
   var lock = LockService.getScriptLock();
   try {
@@ -617,7 +617,6 @@ function submitKit_(d) {
   var email = s_(d.email).toLowerCase();
   if (!s_(d.artist)) return { ok: false, error: 'Please add your artist name.' };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: 'Please add a valid email.' };
-  if (!isUrl_(d.photo)) return { ok: false, error: 'Please add a link to your profile photo (starting with https://).' };
   if (!d.folder && !(d.photos && d.videos && (s_(d.bio) || d.bioLink))) return { ok: false, error: 'Please share your press kit folder (Option A), or your photos, videos and bio (Option B).' };
   var links = ['folder', 'photos', 'videos', 'bioLink', 'soundcloud', 'spotify', 'beatport', 'site'];
   for (var i = 0; i < links.length; i++) {
@@ -639,6 +638,10 @@ function submitKit_(d) {
         }
       }
     }
+    var oldPhoto = row ? String(sh.getRange(row, KIT_HEADERS.indexOf('Profile photo') + 1).getValue()) : '';
+    if (d.photoData) d.photo = saveKitPhoto_(d.photoData, s_(d.artist), oldPhoto);
+    else if (oldPhoto) d.photo = oldPhoto;
+    else return { ok: false, error: 'Please choose a profile photo.' };
     if (!id) id = 'KIT-' + Utilities.formatDate(now, 'Etc/UTC', 'yyMMdd') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
     var data = [now, s_(d.artist), s_(d.realName), email, s_(d.city), s_(d.photo), s_(d.folder),
       s_(d.photos), s_(d.videos), (function (v) { return /^[=+\-@]/.test(v) ? "'" + v : v; })(String(d.bio || '').trim().slice(0, 3000)), s_(d.bioLink), s_(d.instagram), s_(d.soundcloud), s_(d.spotify), s_(d.beatport), s_(d.site), (function (v) { return /^[=+\-@]/.test(v) ? "'" + v : v; })(String(d.releases || '').trim().slice(0, 2000)), first, id];
@@ -646,6 +649,40 @@ function submitKit_(d) {
     notifyKit_(d, !!row);
     return { ok: true, updated: !!row };
   } finally { lock.releaseLock(); }
+}
+
+/** Profile photos: one small JPEG per artist in the IZIKI Drive (folder below). */
+var KIT_PHOTO_FOLDER = 'IZIKI Press kits – profile photos';
+var KIT_PHOTO_MAX = 160 * 1024; // bytes; the form sends ~30–60 KB
+
+function kitPhotoFolder_() {
+  var props = PropertiesService.getScriptProperties(), id = props.getProperty('KIT_PHOTO_FOLDER_ID');
+  if (id) { try { var f = DriveApp.getFolderById(id); if (!f.isTrashed()) return f; } catch (e) {} }
+  var folder = DriveApp.createFolder(KIT_PHOTO_FOLDER);
+  props.setProperty('KIT_PHOTO_FOLDER_ID', folder.getId());
+  return folder;
+}
+
+function saveKitPhoto_(dataUrl, artist, oldUrl) {
+  var m = String(dataUrl).match(/^data:image\/jpeg;base64,([A-Za-z0-9+\/=]+)$/);
+  if (!m) throw new Error('The profile photo could not be read. Please choose it again.');
+  var bytes = Utilities.base64Decode(m[1]);
+  if (bytes.length > KIT_PHOTO_MAX) throw new Error('The profile photo is too big. Please choose another one.');
+  if ((bytes[0] & 255) !== 0xFF || (bytes[1] & 255) !== 0xD8) throw new Error('The profile photo could not be read. Please choose it again.');
+  var folder = kitPhotoFolder_();
+  var name = (artist || 'artist').replace(/[^\w\- .]+/g, '').trim().slice(0, 60) || 'artist';
+  var file = folder.createFile(Utilities.newBlob(bytes, 'image/jpeg', name + '.jpg'));
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  var old = String(oldUrl || '').match(/\/file\/d\/([\w-]{20,})/);
+  if (old) { try { var of = DriveApp.getFileById(old[1]); if (of.getParents().hasNext() && of.getParents().next().getId() === folder.getId()) of.setTrashed(true); } catch (e) {} }
+  return 'https://drive.google.com/file/d/' + file.getId() + '/view';
+}
+
+/** Run once from the editor to approve Drive access and create the photo folder. */
+function setupKitPhotos() {
+  var f = kitPhotoFolder_();
+  Logger.log('Photo folder: ' + f.getUrl());
+  return f.getUrl();
 }
 
 function notifyKit_(d, updated) {
