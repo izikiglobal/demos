@@ -75,6 +75,7 @@ function doPost(e) {
 
     var err = validate_(d);
     if (err) return json_({ ok: false, error: err });
+    d.link = fixLinks_(d.link); // SoundCloud short links -> full links the player can open
 
     var sheet = sheet_();
     if (CONFIG.MIN_DAYS_BETWEEN > 0 && recentlySubmitted_(sheet, d.email)) {
@@ -120,6 +121,7 @@ function roomApi_(d) {
 
 function roomData(key) {
   checkKey_(key);
+  upgradeLinks_(sheet_());
   var demos = rows_(sheet_()).map(function (r) {
     return {
       id: r['ID'], received: iso_(r['Received']), status: r['Status'] || 'New',
@@ -309,6 +311,52 @@ function recentlySubmitted_(sheet, email) {
     if (String(rows[i][5]).toLowerCase() === email && new Date(rows[i][0]).getTime() > cutoff) return true;
   }
   return false;
+}
+
+// ---------- SoundCloud links ----------
+// Artists often paste short share links (on.soundcloud.com/…). The SoundCloud player can't open those,
+// so we follow the redirect once and keep the full track link (private token included).
+function resolveSoundCloud_(u) {
+  u = String(u || '').trim();
+  for (var hop = 0; hop < 4 && /^https?:\/\/(on\.soundcloud\.com|soundcloud\.app\.goo\.gl)\//i.test(u); hop++) {
+    try {
+      var r = UrlFetchApp.fetch(u, { followRedirects: false, muteHttpExceptions: true });
+      var h = r.getHeaders(), loc = h.Location || h.location;
+      if (!loc) break;
+      u = String(loc);
+    } catch (e) { break; }
+  }
+  if (/^https?:\/\/(m\.|www\.)?soundcloud\.com\//i.test(u)) {
+    u = u.replace(/^https?:\/\/(m\.|www\.)?soundcloud\.com/i, 'https://soundcloud.com').split('?')[0].split('#')[0];
+  }
+  return u;
+}
+
+function fixLinks_(text) {
+  return String(text || '').replace(/https?:\/\/[^\s|]+/g, function (u) {
+    return /soundcloud\.(com|app\.goo\.gl)\//i.test(u) ? resolveSoundCloud_(u) : u;
+  });
+}
+
+/** Rewrites short SoundCloud links already in the sheet (runs when the Listening Room loads; cheap after the first time). */
+function upgradeLinks_(sh) {
+  var last = sh.getLastRow();
+  if (last < 2) return;
+  var col = HEADERS.indexOf('Listen link') + 1;
+  var rng = sh.getRange(2, col, last - 1, 1), vals = rng.getValues(), changed = false;
+  for (var i = 0; i < vals.length; i++) {
+    var v = String(vals[i][0] || '');
+    if (/on\.soundcloud\.com|soundcloud\.app\.goo\.gl|[?&](si|utm_source)=/i.test(v)) {
+      var nv = fixLinks_(v);
+      if (nv !== v) { vals[i][0] = nv; changed = true; }
+    }
+  }
+  if (changed) rng.setValues(vals);
+}
+
+/** Run once from the editor to approve the new "connect to external service" permission. */
+function authorizeLinkFix() {
+  Logger.log(resolveSoundCloud_('https://on.soundcloud.com/QKdQswTHjsgUaLSE99'));
 }
 
 function ratingsSheet_() { return tab_(CONFIG.RATINGS_SHEET, RATING_HEADERS); }
