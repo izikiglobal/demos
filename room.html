@@ -255,12 +255,12 @@ nav .count{font-variant-numeric:tabular-nums;opacity:.8;margin-left:4px}
   new MutationObserver(function () { hydrateSoundCloud(main); }).observe(main, { childList: true, subtree: true });
 
   function url(v) { return /^https?:\/\//i.test(v || '') ? v : ''; }
+  function igList(v) { var out = []; String(v || '').split(/\s*[,;\n]+\s*|\s+(?=@|https?:|www\.|instagram\.com)/).forEach(function (t) { var m = t.match(/instagram\.com\/([A-Za-z0-9._]+)/i), h = (m ? m[1] : t.trim()).replace(/^@+/, ''); if (/^[A-Za-z0-9._]{1,30}$/.test(h) && out.indexOf(h) < 0) out.push(h); }); return out; }
   // "About the artist": bio + one-tap links to see who they are
   function aboutHtml(d) {
-    var ig = String(d.instagram || '').trim().replace(/^@/, '');
-    if (ig && !/^https?:/i.test(ig)) ig = 'https://instagram.com/' + ig;
-    var soc = [['Spotify', url(d.spotify), '#1DB954'], ['Instagram', url(ig), '#E1306C'], ['SoundCloud', url(d.soundcloud), '#FF5500'],
-               ['Beatport', url(d.beatport), '#01FF95'], ['Website / promokit', url(d.website), 'var(--marigold)']]
+    var igs = igList(d.instagram).map(function (h, i, a) { return [a.length > 1 ? '@' + h : 'Instagram', 'https://instagram.com/' + h, '#E1306C']; });
+    var soc = [['Spotify', url(d.spotify), '#1DB954']].concat(igs, [['SoundCloud', url(d.soundcloud), '#FF5500'],
+               ['Beatport', url(d.beatport), '#01FF95'], ['Website / promokit', url(d.website), 'var(--marigold)']])
       .filter(function (x) { return x[1]; })
       .map(function (x) { return '<a class="soc" style="--c:' + x[2] + '" href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + x[0] + '</a>'; });
     if (d.email) soc.push('<a class="soc" style="--c:var(--muted)" href="mailto:' + esc(d.email) + '">Email artist</a>');

@@ -96,7 +96,8 @@ h1 span{font-weight:300}
 
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function url(v) { v = String(v || '').trim(); return /^https?:\/\//i.test(v) ? v : ''; }
-  function ig(v) { v = String(v || '').trim().replace(/^@/, ''); if (!v) return ''; return /^https?:/i.test(v) ? v : 'https://instagram.com/' + v; }
+  function igList(v) { var out = []; String(v || '').split(/\s*[,;\n]+\s*|\s+(?=@|https?:|www\.|instagram\.com)/).forEach(function (t) { var m = t.match(/instagram\.com\/([A-Za-z0-9._]+)/i), h = (m ? m[1] : t.trim()).replace(/^@+/, ''); if (/^[A-Za-z0-9._]{1,30}$/.test(h) && out.indexOf(h) < 0) out.push(h); }); return out; }
+  function ig(v) { return igList(v).map(function (h) { return 'https://instagram.com/' + h; }).join(', '); }
   function initials(n) { return String(n || '?').trim().split(/\s+/).slice(0, 2).map(function (w) { return w[0]; }).join('').toUpperCase(); }
   function firstLetter(n) { var c = String(n || '#').trim().charAt(0).toUpperCase(); return /[A-Z]/.test(c) ? c : '#'; }
   function fmt(d) { var t = new Date(d); return isNaN(t) ? '' : t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
@@ -129,8 +130,9 @@ h1 span{font-weight:300}
     var files = [['Press kit folder', k['Press kit folder'], true], ['Photos', k['Photos']], ['Videos', k['Videos']], ['Bio doc', k['Bio link']]]
       .filter(function (x) { return url(x[1]); })
       .map(function (x) { return '<a class="b' + (x[2] ? ' main' : '') + '" href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + x[0] + ' ↗</a>'; }).join('');
-    var soc = [['Instagram', ig(k['Instagram']), '#E1306C'], ['SoundCloud', url(k['SoundCloud']), '#FF5500'], ['Spotify', url(k['Spotify']), '#1DB954'],
-               ['Beatport', url(k['Beatport']), '#01FF95'], ['Website', url(k['Website']), 'var(--marigold)']]
+    var igs = igList(k['Instagram']).map(function (h, i, a) { return [a.length > 1 ? '@' + h : 'Instagram', 'https://instagram.com/' + h, '#E1306C']; });
+    var soc = igs.concat([['SoundCloud', url(k['SoundCloud']), '#FF5500'], ['Spotify', url(k['Spotify']), '#1DB954'],
+               ['Beatport', url(k['Beatport']), '#01FF95'], ['Website', url(k['Website']), 'var(--marigold)']])
       .filter(function (x) { return x[1]; })
       .map(function (x) { return '<a class="b dot" style="--c:' + x[2] + '" href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + x[0] + '</a>'; }).join('');
     return '<article class="card">' +

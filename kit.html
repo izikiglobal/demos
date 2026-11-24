@@ -206,10 +206,10 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
 
     <fieldset>
       <legend><span class="num">3</span> Where to find you</legend>
-      <div class="field"><label for="instagram">Instagram <span class="req">*</span></label><input id="instagram" name="instagram" type="text" required maxlength="200" placeholder="@yourname or full link"></div>
+      <div class="field full"><label for="instagram">Instagram <span class="req">*</span></label><input id="instagram" name="instagram" type="text" required maxlength="200" placeholder="@yourname" autocapitalize="off" autocorrect="off" spellcheck="false"><p class="hint">Your username with @ in front, like @yourname. More than one? Separate them with commas.</p></div>
       <div class="field"><label for="soundcloud">SoundCloud</label><input id="soundcloud" name="soundcloud" type="url" maxlength="300" placeholder="https://soundcloud.com/…"></div>
       <div class="field"><label for="spotify">Spotify</label><input id="spotify" name="spotify" type="url" maxlength="300" placeholder="https://open.spotify.com/artist/…"></div>
-      <div class="field"><label for="beatport">Beatport</label><input id="beatport" name="beatport" type="url" maxlength="300" placeholder="https://www.beatport.com/artist/…"></div>
+      <div class="field full"><label for="beatport">Beatport</label><input id="beatport" name="beatport" type="url" maxlength="300" placeholder="https://www.beatport.com/artist/…"></div>
       <div class="field full"><label for="site">Website or EPK</label><input id="site" name="site" type="url" maxlength="300" placeholder="https://"></div>
     </fieldset>
 
@@ -350,8 +350,30 @@ footer .dots i{width:7px;height:7px;border-radius:50%;background:var(--sun)}
     });
   });
 
+  // Instagram: accept "@name", "name" or a full link, and several separated by commas -> "@name, @other"
+  function igClean(v) {
+    var out = [], bad = false;
+    String(v || '').split(/\s*[,;\n]+\s*|\s+(?=@|https?:|www\.|instagram\.com)/).forEach(function (t) {
+      t = t.trim(); if (!t) return;
+      var m = t.match(/instagram\.com\/([A-Za-z0-9._]+)/i), h = (m ? m[1] : t).replace(/^@+/, '');
+      if (/^[A-Za-z0-9._]{1,30}$/.test(h)) { if (out.indexOf('@' + h) < 0) out.push('@' + h); } else bad = true;
+    });
+    return { list: out, bad: bad };
+  }
+  var igEl = form.elements.instagram;
+  igEl.addEventListener('blur', function () { var r = igClean(igEl.value); if (!r.bad && r.list.length) igEl.value = r.list.join(', '); });
+  function igCheck() {
+    var r = igClean(igEl.value);
+    if (igEl.value.trim() && (r.bad || !r.list.length)) {
+      say('Please write your Instagram username with @ in front, like @yourname. For more than one, separate them with commas.', true);
+      igEl.focus(); return false;
+    }
+    igEl.value = r.list.join(', '); return true;
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+    if (!igCheck()) return;
     form.querySelectorAll('input[type=url]').forEach(function (el) { el.dispatchEvent(new Event('blur')); });
     if (!form.checkValidity()) {
       var bad = form.querySelector(':invalid');
